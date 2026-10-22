@@ -1,0 +1,5 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="arrowup-sm">
+<path id="arrow" d="M11.875 3C12.4963 3 13 3.50368 13 4.125V17.159L17.8295 12.3295C18.2688 11.8902 18.9812 11.8902 19.4205 12.3295C19.8598 12.7688 19.8598 13.4812 19.4205 13.9205L12.6705 20.6705C12.2312 21.1098 11.5188 21.1098 11.0795 20.6705L4.3295 13.9205C3.89017 13.4812 3.89017 12.7688 4.3295 12.3295C4.76884 11.8902 5.48116 11.8902 5.9205 12.3295L10.75 17.159V4.125C10.75 3.50368 11.2537 3 11.875 3Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/>
+</g>
+</svg>

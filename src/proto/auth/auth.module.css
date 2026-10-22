@@ -1,0 +1,144 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+.lead {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-dark);
+}
+
+.legal {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-dark);
+}
+
+.legal a,
+.inlineLink {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.inlineLink {
+  display: inline;
+  min-height: 24px;
+  font-size: 12px;
+}
+
+.rowBetween {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.sso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 9999px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.015em;
+  color: #1e293b;
+  transition: background-color 150ms ease;
+}
+
+.sso:hover {
+  background: #f8fafc;
+}
+
+.sso:focus-visible {
+  border-radius: 9999px;
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--c-text-sub);
+}
+
+.or span {
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--c-g2);
+}
+
+.errorBox {
+  padding: 10px 12px;
+  border-radius: var(--r-8);
+  background: #fdecec;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.notice {
+  padding: 10px 12px;
+  border-radius: var(--r-8);
+  background: #eaf6ef;
+  color: #1d6b43;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: -8px;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--c-g1);
+}
+
+.ruleOk {
+  color: var(--c-text-dark-2);
+}
+
+.ruleDot {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ruleDot::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b5b5bd;
+}
+
+.resend:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hintSmall {
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--c-g1);
+  text-align: center;
+}

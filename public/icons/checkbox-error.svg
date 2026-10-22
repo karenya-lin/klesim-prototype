@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="checkbox">
+<mask id="stroke0_0_536" fill="white">
+<path d="M0 3.6C0 1.61177 1.61177 0 3.6 0H20.4C22.3882 0 24 1.61177 24 3.6V20.4C24 22.3882 22.3882 24 20.4 24H3.6C1.61177 24 0 22.3882 0 20.4V3.6Z" fill-rule="evenodd" clip-rule="evenodd"/>
+</mask>
+<path id="Vector (Stroke)" d="M3.6 0C1.61177 0 0 1.61177 0 3.6V20.4C0 22.3882 1.61177 24 3.6 24H20.4C22.3882 24 24 22.3882 24 20.4V3.6C24 1.61177 22.3882 0 20.4 0H3.6Z" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke="#E82D2D" mask="url(#stroke0_0_536)"/>
+</g>
+</svg>

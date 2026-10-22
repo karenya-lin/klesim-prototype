@@ -1,0 +1,98 @@
+.header {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  height: calc(var(--sb-h) + 120px);
+  padding: calc(var(--sb-h) + 1px) 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: normal;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.compat {
+  width: auto;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 8px 0 56px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+
+.step {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.rail {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 22px;
+}
+
+.num {
+  min-width: 22px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-primary-2);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: normal;
+  text-align: center;
+  color: var(--c-text-dark);
+}
+
+.line {
+  flex: 1 1 auto;
+  width: 1px;
+  min-height: 24px;
+  margin-bottom: -14px;
+  background: var(--c-g2);
+}
+
+.stepText {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepTitle {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: normal;
+  color: var(--c-text-dark);
+}
+
+.stepBody {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--c-text-sub);
+}

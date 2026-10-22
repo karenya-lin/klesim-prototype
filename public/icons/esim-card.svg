@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Offer Icon" clip-path="url(#clip0_0_880)">
+<path id="Vector" d="M47.3684 0H12.6316C5.65535 0 0 3.77023 0 8.42105V31.5789C0 36.2298 5.65535 40 12.6316 40H47.3684C54.3447 40 60 36.2298 60 31.5789V8.42105C60 3.77023 54.3447 0 47.3684 0Z" fill="#66CB9F"/>
+<path id="Vector_2" d="M60 12.636V31.6636C60 36.2677 54.4124 40 47.5196 40H30.8942L22.7976 29.4849C21.2212 27.4377 22.4279 24.9246 25.4926 23.8717L56.8632 13.094C57.8677 12.7489 58.9471 12.6035 60 12.636Z" fill-rule="evenodd" clip-rule="evenodd" fill="#8CDFB3"/>
+<path id="Vector_3" d="M25.2632 0L24.222 11.8843C24.022 14.1661 20.9874 15.9116 17.444 15.7828L0 15.1489V8.27626C0 3.70541 5.75414 0 12.8522 0H25.2632Z" fill-rule="evenodd" clip-rule="evenodd" fill="#8CDFB3"/>
+</g>
+<defs>
+<clipPath id="clip0_0_880">
+<rect width="60" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,145 @@
+.stage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 72px;
+  padding: 16px;
+  background:
+    radial-gradient(1200px 600px at 75% 20%, rgba(39, 108, 180, 0.12), transparent 60%),
+    radial-gradient(900px 500px at 15% 90%, rgba(251, 189, 14, 0.12), transparent 60%),
+    var(--stage-bg);
+}
+
+.caption {
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--stage-ink);
+}
+
+.title {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--stage-muted);
+}
+
+.hints {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--stage-muted);
+}
+
+.hints li::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--c-primary-2);
+  vertical-align: middle;
+}
+
+.device {
+  flex: none;
+  width: 414px;
+  height: 868px;
+  padding: 12px;
+  border-radius: 64px;
+  background: #0b0b12;
+  box-shadow:
+    0 0 0 2px #2a2a35,
+    0 30px 80px rgba(12, 6, 36, 0.28),
+    0 8px 24px rgba(12, 6, 36, 0.18);
+}
+
+.screen {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  border-radius: 52px;
+  overflow: hidden;
+  background: var(--c-bg);
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+@media (max-height: 899px) and (min-width: 521px) {
+  .device {
+    zoom: 0.9;
+  }
+}
+
+@media (max-height: 800px) and (min-width: 521px) {
+  .device {
+    zoom: 0.8;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 521px) {
+  .device {
+    zoom: 0.7;
+  }
+}
+
+@media (max-width: 860px) and (min-width: 521px) {
+  .stage {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .caption {
+    max-width: 414px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hints {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .stage {
+    display: block;
+    padding: 0;
+    min-height: 0;
+    background: var(--c-bg);
+  }
+
+  .caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .device {
+    width: 100%;
+    height: 100dvh;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+  }
+}
