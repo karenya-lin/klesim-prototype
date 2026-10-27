@@ -12,12 +12,14 @@
   gap: 8px;
   padding: 0 16px 0 24px;
   border-radius: var(--r-pill);
-  border: 2px solid var(--c-primary);
-  background: #fff;
+  border: 2px solid var(--c-border-strong);
+  background: var(--c-surface);
 }
 
 .inputPill:focus-within {
-  box-shadow: 0 0 0 3px rgba(39, 108, 180, 0.25);
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--c-focus-halo);
 }
 
 .input {
@@ -32,8 +34,13 @@
   outline: none;
 }
 
+.input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 .input::placeholder {
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }
 
 .input::-webkit-search-cancel-button {
@@ -76,7 +83,7 @@
   gap: 8px;
   padding: 16px;
   border-radius: var(--r-20);
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--c-surface-translucent);
   box-shadow: var(--sh-blurry);
   text-align: left;
   transition: transform 150ms ease;
@@ -111,5 +118,5 @@
 .empty {
   padding: 16px;
   font-size: 14px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }

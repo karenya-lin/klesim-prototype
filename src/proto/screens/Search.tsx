@@ -40,7 +40,7 @@ export function SearchScreen() {
             </div>
           </div>
 
-          <section className={cx(home.promo, home.promoBlue, styles.promo)} aria-label="Search destinations">
+          <section className={cx(home.promo, styles.promo)} aria-label="Search destinations">
             <div className={home.promoHead}>
               <span>eSIM starting from {money(5.59, { tight: true })}!</span>
             </div>
@@ -65,7 +65,7 @@ export function SearchScreen() {
                   autoFocus
                 />
                 <button type="submit" className={styles.submit} aria-label="Search">
-                  <Img src="/icons/search-blue.svg" size={24} />
+                  <Img src="/icons/search-dark.svg" size={24} />
                 </button>
               </label>
             </form>

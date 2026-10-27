@@ -20,7 +20,7 @@
   font-weight: 700;
   font-size: 24px;
   line-height: normal;
-  color: #fff;
+  color: var(--c-on-dark);
   white-space: nowrap;
 }
 
@@ -61,12 +61,12 @@
   min-width: 22px;
   padding: 4px;
   border-radius: var(--r-pill);
-  background: var(--c-primary-2);
+  background: var(--c-text-dark);
   font-weight: 700;
   font-size: 14px;
   line-height: normal;
   text-align: center;
-  color: var(--c-text-dark);
+  color: var(--c-on-dark);
 }
 
 .line {

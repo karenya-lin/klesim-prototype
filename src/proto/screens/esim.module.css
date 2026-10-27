@@ -13,7 +13,7 @@
   font-weight: 700;
   font-size: 24px;
   line-height: 28px;
-  color: #fff;
+  color: var(--c-on-dark);
   text-align: center;
 }
 
@@ -54,7 +54,7 @@
   width: 100%;
   border-radius: var(--r-20);
   overflow: hidden;
-  background: #fff;
+  background: var(--c-surface);
   box-shadow: var(--sh-blurry);
   text-align: left;
   color: var(--c-text-dark);
@@ -104,15 +104,15 @@ button.card:hover {
 .status {
   font-weight: 700;
   font-size: 16px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }
 
 .statusActive {
-  color: var(--c-primary-2);
+  color: var(--c-success);
 }
 
 .statusNew {
-  color: var(--c-primary);
+  color: var(--c-info);
 }
 
 .cardTitle {
@@ -123,7 +123,7 @@ button.card:hover {
 
 .ref {
   font-size: 14px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }
 
 .cardBottom {
@@ -138,7 +138,7 @@ button.card:hover {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }
 
 .data {
@@ -161,12 +161,12 @@ button.card:hover {
 
 .progress {
   height: 4px;
-  background: var(--c-g4);
+  background: var(--c-g2);
 }
 
 .progressFill {
   height: 100%;
-  background: var(--c-primary-2);
+  background: var(--c-selected);
 }
 
 .fab {
@@ -193,7 +193,7 @@ button.card:hover {
   flex: 1 1 0;
   padding: 16px 24px;
   border-radius: var(--r-pill);
-  background: rgba(250, 250, 250, 0.8);
+  background: var(--c-surface-translucent);
   font-weight: 700;
   font-size: 16px;
   color: var(--c-text-dark);
@@ -202,7 +202,7 @@ button.card:hover {
 }
 
 .softBtn:hover {
-  background: #fff;
+  background: var(--c-surface);
 }
 
 .softBtn:focus-visible {
@@ -228,7 +228,7 @@ button.card:hover {
   flex: 1 1 0;
   height: 2px;
   border-radius: 2px;
-  background: var(--c-g4);
+  background: var(--c-border-strong);
 }
 
 .manualTitle {
@@ -292,7 +292,7 @@ button.card:hover {
 
 .kvLabel {
   font-size: 14px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }
 
 .kvValue {
@@ -379,5 +379,5 @@ button.card:hover {
 .menuItem span:last-child {
   font-weight: 400;
   font-size: 14px;
-  color: var(--c-sub);
+  color: var(--c-text-muted);
 }

@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="checkbox">
-<path id="Vector (Stroke)" d="M0 3.6C0 1.61177 1.61177 0 3.6 0H20.4C22.3882 0 24 1.61177 24 3.6V20.4C24 22.3882 22.3882 24 20.4 24H3.6C1.61177 24 0 22.3882 0 20.4V3.6Z" fill-rule="evenodd" clip-rule="evenodd" fill="#FF7A1A"/>
+<path id="Vector (Stroke)" d="M0 3.6C0 1.61177 1.61177 0 3.6 0H20.4C22.3882 0 24 1.61177 24 3.6V20.4C24 22.3882 22.3882 24 20.4 24H3.6C1.61177 24 0 22.3882 0 20.4V3.6Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3050E0"/>
 <path id="Vector (Stroke)_2" d="M17.8971 7.55156C18.3657 8.02019 18.3657 8.77999 17.8971 9.24862L10.4485 17.0486C9.9799 17.5172 9.2201 17.5172 8.75147 17.0486L5.15147 13.4486C4.68284 12.98 4.68284 12.2202 5.15147 11.7516C5.6201 11.2829 6.3799 11.2829 6.84853 11.7516L9.6 14.503L16.2 7.55156C16.6686 7.08293 17.4284 7.08293 17.8971 7.55156Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/>
 </g>
 </svg>

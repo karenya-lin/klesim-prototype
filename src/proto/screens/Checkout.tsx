@@ -5,7 +5,15 @@ import { AuthFlow } from "../auth/AuthFlow";
 import { useApp } from "../store";
 import { Field, SelectField } from "../ui/Field";
 import { cx, ui } from "../ui/parts";
-import { CardHead, CartItemsCard, CheckoutHeader, ConsentRow, CouponRow, PaymentRow, TotalsBar } from "./CartParts";
+import {
+  CardHead,
+  CartItemsCard,
+  CheckoutHeader,
+  ConsentRow,
+  CouponRow,
+  PaymentRow,
+  TotalsBar,
+} from "./CartParts";
 import plans from "./plans.module.css";
 import styles from "./cart.module.css";
 
@@ -85,6 +93,7 @@ export function CheckoutScreen() {
   const [contactOpen, setContactOpen] = useState(true);
   const [billingOpen, setBillingOpen] = useState(true);
   const [tried, setTried] = useState(false);
+  const [consentNudge, setConsentNudge] = useState(0);
 
   const step = !state.user ? 1 : !state.billing ? 2 : !state.payment ? 3 : 4;
   const missing = {
@@ -96,6 +105,7 @@ export function CheckoutScreen() {
 
   const purchase = () => {
     setTried(true);
+    if (missing.consent && !missing.contact && !missing.billing) setConsentNudge((n) => n + 1);
     if (Object.values(missing).some(Boolean) || state.cart.length === 0) return;
     actions.purchase();
     actions.openOverlay("success");
@@ -177,7 +187,7 @@ export function CheckoutScreen() {
           <CartItemsCard />
           <CouponRow />
           <PaymentRow error={tried && missing.payment} />
-          <ConsentRow error={tried && missing.consent} />
+          <ConsentRow error={tried && missing.consent} nudge={consentNudge} />
           {tried && problems.length ? (
             <p className={styles.errorSummary} role="alert">
               To purchase, please {problems.join(", ")}.

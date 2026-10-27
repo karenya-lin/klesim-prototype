@@ -15,8 +15,8 @@ const ACTIVATION_CODE = "LPA:1$smdp.example.com$DEMO-0000-KLESIM";
 function CopyIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="8" y="8" width="12" height="12" rx="2.5" stroke="#0C0624" strokeWidth="2" />
-      <path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" stroke="#0C0624" strokeWidth="2" />
+      <rect x="8" y="8" width="12" height="12" rx="2.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
 }

@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="eye">
-<path id="Vector" d="M0.999919 12.0002C0.999919 12.0002 4.99992 4.00016 11.9999 4.00016C18.9999 4.00016 22.9999 12.0002 22.9999 12.0002C22.9999 12.0002 18.9999 20.0002 11.9999 20.0002C4.99992 20.0002 0.999919 12.0002 0.999919 12.0002Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#828282"/>
-<path id="Vector_2" d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#828282"/>
+<path id="Vector" d="M0.999919 12.0002C0.999919 12.0002 4.99992 4.00016 11.9999 4.00016C18.9999 4.00016 22.9999 12.0002 22.9999 12.0002C22.9999 12.0002 18.9999 20.0002 11.9999 20.0002C4.99992 20.0002 0.999919 12.0002 0.999919 12.0002Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#66686E"/>
+<path id="Vector_2" d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#66686E"/>
 </g>
 </svg>

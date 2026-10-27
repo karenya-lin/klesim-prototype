@@ -6,8 +6,7 @@
   gap: 72px;
   padding: 16px;
   background:
-    radial-gradient(1200px 600px at 75% 20%, rgba(39, 108, 180, 0.12), transparent 60%),
-    radial-gradient(900px 500px at 15% 90%, rgba(251, 189, 14, 0.12), transparent 60%),
+    radial-gradient(1200px 600px at 75% 20%, var(--stage-glow), transparent 60%),
     var(--stage-bg);
 }
 
@@ -48,7 +47,7 @@
   height: 6px;
   margin-right: 8px;
   border-radius: 50%;
-  background: var(--c-primary-2);
+  background: var(--stage-ink);
   vertical-align: middle;
 }
 
@@ -58,11 +57,11 @@
   height: 868px;
   padding: 12px;
   border-radius: 64px;
-  background: #0b0b12;
+  background: var(--stage-device);
   box-shadow:
-    0 0 0 2px #2a2a35,
-    0 30px 80px rgba(12, 6, 36, 0.28),
-    0 8px 24px rgba(12, 6, 36, 0.18);
+    0 0 0 2px var(--stage-device-edge),
+    0 30px 80px rgb(var(--c-overlay-rgb) / 0.28),
+    0 8px 24px rgb(var(--c-overlay-rgb) / 0.18);
 }
 
 .screen {

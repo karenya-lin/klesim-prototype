@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { currencyOf } from "../data";
 import { PAYMENT_LABEL, cartTotals, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { ChevronSmall } from "../ui/icons";
+import { AlertCircle, ChevronSmall } from "../ui/icons";
 import { BackButton, CloseButton, CurrencyButton, Hero, ShareButton, cx, ui } from "../ui/parts";
 import styles from "./cart.module.css";
 
@@ -236,7 +236,7 @@ export function PaymentRow({ error }: { error?: boolean }) {
           ) : null}
           {p === "card" ? <span className={styles.cardSub}>Card details are entered with the payment provider</span> : null}
         </span>
-        <span className={cx(styles.iconCircle, p && styles.iconCircleBlue)}>
+        <span className={cx(styles.iconCircle, p && styles.iconCircleSelected)}>
           <Img src="/icons/payment.svg" size={24} />
         </span>
       </button>
@@ -244,39 +244,63 @@ export function PaymentRow({ error }: { error?: boolean }) {
   );
 }
 
-export function ConsentRow({ error }: { error?: boolean }) {
+/**
+ * `nudge`: bump it when Purchase is pressed without consent; the row then scrolls into view and takes focus,
+ * so the inline error is seen and read out. Ids come from useId because Cart and Checkout stay mounted together.
+ */
+export function ConsentRow({ error, nudge = 0 }: { error?: boolean; nudge?: number }) {
   const { state, actions } = useApp();
   const checked = state.consent;
+  const id = useId();
+  const rowRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!nudge) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    rowRef.current?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    inputRef.current?.focus({ preventScroll: true });
+  }, [nudge]);
+
   return (
-    <div className={styles.consent}>
-      <span className={styles.checkbox}>
-        <Img
-          src={checked ? "/icons/checkbox-on.svg" : error ? "/icons/checkbox-error.svg" : "/icons/checkbox-off.svg"}
-          size={24}
-        />
-        <input
-          id="consent"
-          type="checkbox"
-          checked={checked}
-          onChange={(e) => actions.setConsent(e.target.checked)}
-          aria-invalid={error || undefined}
-          aria-describedby="consent-text"
-        />
-      </span>
-      <label htmlFor="consent" id="consent-text" className={styles.consentText}>
-        I confirm that I have an device compatible with eSIM.
-        <br />
-        <br />
-        By clicking “Purchase”, you agree to the{" "}
-        <a href="#refund" onClick={(e) => e.preventDefault()}>
-          Refund Policy
-        </a>{" "}
-        and{" "}
-        <a href="#terms" onClick={(e) => e.preventDefault()}>
-          Terms of Service
-        </a>
-        .
-      </label>
+    <div className={styles.consent} ref={rowRef}>
+      <div className={styles.consentRow}>
+        <span className={styles.checkbox}>
+          <Img
+            src={checked ? "/icons/checkbox-on.svg" : error ? "/icons/checkbox-error.svg" : "/icons/checkbox-off.svg"}
+            size={24}
+          />
+          <input
+            ref={inputRef}
+            id={id}
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => actions.setConsent(e.target.checked)}
+            aria-invalid={error || undefined}
+            aria-describedby={error ? `${id}-text ${id}-error` : `${id}-text`}
+          />
+        </span>
+        <label htmlFor={id} id={`${id}-text`} className={styles.consentText}>
+          I confirm that I have an device compatible with eSIM.
+          <br />
+          <br />
+          By clicking “Purchase”, you agree to the{" "}
+          <a href="#refund" onClick={(e) => e.preventDefault()}>
+            Refund Policy
+          </a>{" "}
+          and{" "}
+          <a href="#terms" onClick={(e) => e.preventDefault()}>
+            Terms of Service
+          </a>
+          .
+        </label>
+      </div>
+      {error ? (
+        <p id={`${id}-error`} className={styles.consentError}>
+          <AlertCircle />
+          Tick the box to confirm your device supports eSIM.
+        </p>
+      ) : null}
     </div>
   );
 }

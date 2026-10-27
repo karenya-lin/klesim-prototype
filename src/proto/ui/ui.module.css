@@ -12,7 +12,7 @@
   align-items: flex-start;
   justify-content: space-between;
   pointer-events: none;
-  color: #fff;
+  color: var(--c-on-dark);
   transition: opacity 200ms ease;
 }
 
@@ -99,14 +99,14 @@
   inset: 0;
 }
 
-/* black at the bottom (plans, cart, guide) */
+/* graphite at the bottom (plans, cart, guide) */
 .heroShadeUp::after {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 79.958%);
+  background: linear-gradient(to bottom, rgb(var(--c-overlay-rgb) / 0) 0%, rgb(var(--c-overlay-rgb) / 0.94) 79.958%);
 }
 
-/* black at the top (home, search) */
+/* graphite at the top (home, search) */
 .heroShadeDown::after {
-  background: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0) 79.958%);
+  background: linear-gradient(to bottom, rgb(var(--c-overlay-rgb) / 0.94) 0%, rgb(var(--c-overlay-rgb) / 0) 79.958%);
 }
 
 .heroRounded {
@@ -137,8 +137,8 @@
   height: 44px;
   padding: 0 11px;
   border-radius: var(--r-pill);
-  background: rgba(0, 0, 0, 0.4);
-  color: #fff;
+  background: var(--c-glass);
+  color: var(--c-on-dark);
   font-weight: 700;
   font-size: 16px;
   line-height: 1;
@@ -146,7 +146,7 @@
 }
 
 .roundBtn:hover {
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--c-glass-hover);
 }
 
 .roundBtn:active {
@@ -154,19 +154,18 @@
 }
 
 .roundBtnSoft {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--c-glass-soft);
   font-size: 14px;
 }
 
 .roundBtnGhost {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--c-glass-faint);
   width: 40px;
   min-width: 40px;
   height: 40px;
 }
 
 .roundBtn:focus-visible {
-  outline-color: var(--c-primary-2);
   border-radius: var(--r-pill);
 }
 
@@ -177,7 +176,7 @@
   width: 16px;
   height: 16px;
   border-radius: var(--r-pill);
-  background: var(--c-primary-2);
+  background: var(--c-surface);
   color: var(--c-text-dark);
   font-weight: 700;
   font-size: 14px;
@@ -196,8 +195,8 @@
   width: 30px;
   height: 30px;
   border-radius: 1000px;
-  background: rgba(120, 120, 128, 0.12);
-  color: rgba(60, 60, 67, 0.6);
+  background: var(--c-g3);
+  color: var(--c-text-sub);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -205,7 +204,7 @@
 }
 
 .closeBtn:hover {
-  background: rgba(120, 120, 128, 0.2);
+  background: var(--c-g2);
 }
 
 .closeBtn:focus-visible {
@@ -237,23 +236,28 @@
 
 .btnPrimary {
   background: var(--c-primary);
-  color: #fff;
+  color: var(--c-on-primary);
   box-shadow: var(--sh-btn);
 }
 
 .btnPrimary:hover {
-  filter: brightness(1.08);
+  background: var(--c-primary-hover);
+}
+
+.btnPrimary:active {
+  background: var(--c-primary-pressed);
 }
 
 .btnPrimary:disabled {
-  background: #a9bfd8;
+  background: var(--c-disabled-bg);
+  color: var(--c-disabled-fg);
   box-shadow: none;
   cursor: not-allowed;
 }
 
 .btnDark {
   background: var(--c-surface-dark);
-  color: #fff;
+  color: var(--c-on-dark);
   box-shadow: var(--sh-btn);
 }
 
@@ -269,7 +273,7 @@
   border: 1px solid var(--c-g2);
   color: var(--c-text-dark);
   font-size: 14px;
-  background: #fff;
+  background: var(--c-surface);
 }
 
 .btnOutline:hover {
@@ -289,9 +293,9 @@
   align-items: stretch;
   justify-content: space-between;
   padding: 12px 8px max(16px, env(safe-area-inset-bottom));
-  background: #fff;
+  background: var(--c-surface);
   border-top: 1px solid var(--c-g2);
-  box-shadow: 0 -4px 16px rgba(11, 13, 50, 0.06);
+  box-shadow: var(--sh-bar);
 }
 
 .navItem {
@@ -305,7 +309,7 @@
   border-radius: var(--r-pill);
   font-size: 14px;
   font-weight: 400;
-  color: var(--c-g1);
+  color: var(--c-text-muted);
 }
 
 .navItem svg {
@@ -315,11 +319,11 @@
 
 .navItemActive {
   font-weight: 700;
-  color: var(--c-text-dark-2);
+  color: var(--c-text-dark);
 }
 
 .navItemActive svg {
-  color: var(--c-primary-2);
+  color: var(--c-selected);
 }
 
 /* ---------- action bars (subtotal + checkout) ---------- */
@@ -354,7 +358,7 @@
 .amountLabel {
   font-family: var(--font-sf);
   font-size: 12px;
-  color: var(--c-text-dark-2);
+  color: var(--c-text-dark);
   line-height: normal;
 }
 
@@ -423,12 +427,17 @@
   height: 54px;
   padding: 8px 16px;
   border-radius: var(--r-8);
-  background: #75e387;
-  color: var(--c-text-dark-2);
+  background: var(--c-surface-dark);
+  color: var(--c-on-dark);
   overflow: hidden;
   white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(11, 13, 50, 0.18);
+  box-shadow: var(--sh-toast);
   animation: toastIn 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.toast svg {
+  flex: none;
+  color: var(--c-success-on-dark);
 }
 
 .toastCollapsing {
@@ -517,7 +526,7 @@
   padding: 4px;
   border-radius: var(--r-4);
   background: var(--c-g3);
-  color: var(--c-sub);
+  color: var(--c-text-muted);
   font-size: 14px;
   line-height: normal;
 }
@@ -525,7 +534,7 @@
 /* ---------- white card ---------- */
 .card {
   width: 100%;
-  background: #fff;
+  background: var(--c-surface);
   border: 1px solid var(--c-g2);
   border-radius: var(--r-20);
   box-shadow: var(--sh-stick);
@@ -586,7 +595,7 @@
   overflow: hidden;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--c-g1);
+  color: var(--c-text-muted);
 }
 
 .faqOpen .faqAInner {

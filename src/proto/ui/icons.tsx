@@ -100,14 +100,14 @@ export function ChatSupport({ className, size = 24 }: P) {
 export function QuestionCircle({ className, size = 24 }: P) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="#0C0624" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
       <path
         d="M9.6 9.5a2.5 2.5 0 0 1 4.86.83c0 1.67-2.46 2.17-2.46 3.42"
-        stroke="#0C0624"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
       />
-      <circle cx="12" cy="16.9" r="1.1" fill="#0C0624" />
+      <circle cx="12" cy="16.9" r="1.1" fill="currentColor" />
     </svg>
   );
 }
@@ -123,7 +123,18 @@ export function ChevronSmall({ className, up }: P & { up?: boolean }) {
       aria-hidden="true"
       style={{ transform: up ? "rotate(180deg)" : undefined, transition: "transform 200ms ease" }}
     >
-      <path d="M2.5 4.5 6 8l3.5-3.5" stroke="#4F4F4F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Error mark (circle with an exclamation) that follows the text colour, used next to inline error messages. */
+export function AlertCircle({ className, size = 20 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 5.75v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="10" cy="13.9" r="1.1" fill="currentColor" />
     </svg>
   );
 }

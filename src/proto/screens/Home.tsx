@@ -65,7 +65,7 @@ export function HomeScreen() {
               </button>
               <button type="button" className={styles.findPill} onClick={() => actions.navigate("search", "fade")}>
                 <span>Find destination</span>
-                <Img src="/icons/search-blue.svg" size={24} />
+                <Img src="/icons/search-dark.svg" size={24} />
               </button>
             </div>
           </section>

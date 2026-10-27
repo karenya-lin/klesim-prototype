@@ -28,11 +28,11 @@ const FLAGS: Record<string, string> = {
 function Globe() {
   return (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="16" cy="16" r="15" fill="#276CB4" />
+      <circle cx="16" cy="16" r="15" style={{ fill: "var(--c-text-dark)" }} />
       <path
         d="M3 16h26M16 2c3.6 3.6 5.4 8.2 5.4 14S19.6 26.4 16 30c-3.6-3.6-5.4-8.2-5.4-14S12.4 5.6 16 2Z"
-        stroke="#fff"
         strokeWidth="1.6"
+        style={{ stroke: "var(--c-on-dark)" }}
       />
     </svg>
   );
@@ -455,8 +455,8 @@ function HostedCardFields() {
       <div className={styles.hostedHead}>
         <span>Secure card form</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#4D4A57" strokeWidth="1.4" />
-          <path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" stroke="#4D4A57" strokeWidth="1.4" />
+          <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" stroke="currentColor" strokeWidth="1.4" />
         </svg>
       </div>
       <div className={styles.hostedField} aria-hidden="true">

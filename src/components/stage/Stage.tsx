@@ -6,7 +6,7 @@ export function Stage({ children }: { children: ReactNode }) {
   return (
     <main className={styles.stage}>
       <aside className={styles.caption} aria-label="About this prototype">
-        <BrandMark size={40} />
+        <BrandMark size={40} tone="dark" />
         <h1 className={styles.title}>KLeSIM, a travel eSIM app prototype</h1>
         <p className={styles.note}>
           Concept recreation of a design by Karenya Lin. Brand and data are placeholders.
