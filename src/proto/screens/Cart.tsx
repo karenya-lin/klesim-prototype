@@ -44,6 +44,7 @@ export function CartScreen() {
       <TotalsBar
         label={signedIn ? "Purchase" : "Checkout"}
         onPress={signedIn ? purchase : () => actions.navigate("checkout")}
+        payment={signedIn}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
-import { DAY_OPTIONS, PLANS } from "./data";
+import { DAY_OPTIONS, PLANS, formatMoney, type CurrencyCode, type MoneyOptions } from "./data";
 
 export type RouteId =
   | "home"
@@ -17,7 +17,15 @@ export type RouteId =
 
 export type Route = { key: string; id: RouteId };
 export type Transition = "push" | "pop" | "fade" | "none";
-export type OverlayId = "destination" | "details" | "terms" | "coupon" | "payment" | "success" | "resendEmail";
+export type OverlayId =
+  | "destination"
+  | "details"
+  | "terms"
+  | "coupon"
+  | "payment"
+  | "success"
+  | "resendEmail"
+  | "currency";
 
 export type CartItem = {
   key: string;
@@ -70,6 +78,7 @@ export type State = {
   user: User | null;
   billing: Billing | null;
   purchased: boolean;
+  currency: CurrencyCode;
 };
 
 let keySeq = 0;
@@ -115,6 +124,7 @@ const initialState: State = {
   user: null,
   billing: null,
   purchased: false,
+  currency: "EUR",
 };
 
 type Action =
@@ -140,6 +150,7 @@ type Action =
   | { type: "signIn"; user: User }
   | { type: "signOut" }
   | { type: "setBilling"; billing: Billing | null }
+  | { type: "setCurrency"; currency: CurrencyCode }
   | { type: "purchase" };
 
 function top(stack: Route[]) {
@@ -263,6 +274,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, user: null, billing: null };
     case "setBilling":
       return { ...state, billing: action.billing };
+    case "setCurrency":
+      return { ...state, currency: action.currency };
     case "purchase":
       return { ...state, purchased: true };
     default:
@@ -303,6 +316,7 @@ function createActions(dispatch: (a: Action) => void) {
     signIn: (user: User) => dispatch({ type: "signIn", user }),
     signOut: () => dispatch({ type: "signOut" }),
     setBilling: (billing: Billing | null) => dispatch({ type: "setBilling", billing }),
+    setCurrency: (currency: CurrencyCode) => dispatch({ type: "setCurrency", currency }),
     purchase: () => dispatch({ type: "purchase" }),
   };
 }
@@ -322,6 +336,13 @@ export function useApp() {
   const v = useContext(Ctx);
   if (!v) throw new Error("useApp must be used inside AppProvider");
   return v;
+}
+
+/** Formats an EUR amount in the currency the traveller picked (kept in the store across screens). */
+export function useMoney() {
+  const { state } = useApp();
+  const code = state.currency;
+  return useMemo(() => (eur: number, opts?: MoneyOptions) => formatMoney(eur, code, opts), [code]);
 }
 
 export function maskEmail(email: string) {

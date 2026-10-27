@@ -16,22 +16,33 @@ export const PLACE_ROWS: Place[][] = [
 export type Destination = {
   id: string;
   name: string;
-  meta: string;
+  network: string;
+  /** lowest plan price in EUR (converted for display) */
+  from?: number;
+  /** extra coverage note shown after the price, e.g. "35 countries/regions" */
+  coverage?: string;
   regions: string;
   kind: "country" | "region";
 };
 
 export const DESTINATIONS: Destination[] = [
-  { id: "europe", name: "Europe", meta: "4G / 5G · From €5.00 · 35 countries/regions", regions: "35 countries/regions", kind: "region" },
-  { id: "france", name: "France", meta: "4G / 5G · From €5.00", regions: "1 country", kind: "country" },
-  { id: "global", name: "Global", meta: "4G / 5G · From €5.00 · 35 countries/regions", regions: "112 countries/regions", kind: "region" },
-  { id: "indonesia", name: "Indonesia", meta: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "england", name: "England", meta: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "united-states", name: "United States", meta: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "colombia", name: "Colombia", meta: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "australia", name: "Australia", meta: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "canada", name: "Canada", meta: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "europe", name: "Europe", network: "4G / 5G", from: 5, coverage: "35 countries/regions", regions: "35 countries/regions", kind: "region" },
+  { id: "france", name: "France", network: "4G / 5G", from: 5, regions: "1 country", kind: "country" },
+  { id: "global", name: "Global", network: "4G / 5G", from: 5, coverage: "35 countries/regions", regions: "112 countries/regions", kind: "region" },
+  { id: "indonesia", name: "Indonesia", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "england", name: "England", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "united-states", name: "United States", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "colombia", name: "Colombia", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "australia", name: "Australia", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "canada", name: "Canada", network: "4G / 5G", regions: "1 country", kind: "country" },
 ];
+
+/** "4G / 5G · From €5.00 · 35 countries/regions" with the price in the selected currency. */
+export function destinationMeta(d: Destination, money: (eur: number, opts?: MoneyOptions) => string) {
+  return [d.network, d.from !== undefined ? `From ${money(d.from, { tight: true })}` : null, d.coverage]
+    .filter(Boolean)
+    .join(" · ");
+}
 
 export const SHEET_DESTINATIONS = ["europe", "france", "global", "indonesia", "england", "united-states", "colombia"];
 
@@ -41,7 +52,7 @@ export function findDestination(nameOrId: string): Destination {
     DESTINATIONS.find((d) => d.id === key || d.name.toLowerCase() === key) ?? {
       id: key,
       name: nameOrId,
-      meta: "4G / 5G",
+      network: "4G / 5G",
       regions: "1 country",
       kind: "country",
     }
@@ -168,6 +179,66 @@ export const WHY_US = [
   },
 ];
 
-export function euro(value: number) {
-  return `€ ${value.toFixed(2)}`;
+/* ---------- currencies ---------- */
+
+export type CurrencyCode = "EUR" | "USD" | "GBP" | "JPY" | "TWD" | "AUD";
+
+export type Currency = { code: CurrencyCode; symbol: string; name: string; rate: number };
+
+/**
+ * SAMPLE VALUES ONLY: fixed conversion rates from EUR used by this prototype.
+ * They are not live exchange rates and must not be used for real pricing.
+ * Prices in the data above are stored in EUR and converted for display.
+ */
+export const CURRENCIES: Currency[] = [
+  { code: "EUR", symbol: "€", name: "Euro", rate: 1 },
+  { code: "USD", symbol: "$", name: "US Dollar", rate: 1.08 },
+  { code: "GBP", symbol: "£", name: "British Pound", rate: 0.85 },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen", rate: 162 },
+  { code: "TWD", symbol: "NT$", name: "New Taiwan Dollar", rate: 35 },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar", rate: 1.65 },
+];
+
+export function currencyOf(code: CurrencyCode): Currency {
+  return CURRENCIES.find((c) => c.code === code) ?? CURRENCIES[0];
+}
+
+export type MoneyOptions = { tight?: boolean };
+
+const formatters = new Map<CurrencyCode, Intl.NumberFormat>();
+
+function formatterFor(code: CurrencyCode) {
+  let f = formatters.get(code);
+  if (!f) {
+    const digits = code === "JPY" ? 0 : 2;
+    f = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: code,
+      currencyDisplay: "symbol",
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+    formatters.set(code, f);
+  }
+  return f;
+}
+
+/**
+ * The one money formatter: converts an EUR amount with the sample rate and formats it with
+ * Intl.NumberFormat (JPY has no decimals). Conversion runs in integer minor units so half-cent
+ * values round the same way everywhere. Output follows the design: symbol, space, amount ("€ 20.00").
+ */
+export function formatMoney(eur: number, code: CurrencyCode = "EUR", opts: MoneyOptions = {}) {
+  const digits = code === "JPY" ? 0 : 2;
+  const rate4 = Math.round(currencyOf(code).rate * 10000);
+  const minor = Math.round((Math.round(eur * 100) * rate4) / 10 ** (6 - digits));
+  const parts = formatterFor(code).formatToParts(minor / 10 ** digits);
+  const sign = parts.filter((p) => p.type === "minusSign").map((p) => p.value).join("");
+  const symbol = parts.filter((p) => p.type === "currency").map((p) => p.value).join("");
+  const amount = parts
+    .filter((p) => p.type === "integer" || p.type === "group" || p.type === "decimal" || p.type === "fraction")
+    .map((p) => p.value)
+    .join("");
+  const gap = opts.tight ? "" : "\u00a0"; // no-break space between symbol and amount
+  return `${sign}${symbol}${gap}${amount}`;
 }

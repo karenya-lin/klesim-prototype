@@ -1,7 +1,7 @@
 "use client";
 
-import { DAY_OPTIONS, euro } from "../data";
-import { useApp } from "../store";
+import { DAY_OPTIONS } from "../data";
+import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { cx, ui } from "../ui/parts";
 import { PlanBottomBar, PlanHeader } from "./PlanParts";
@@ -9,6 +9,7 @@ import styles from "./plans.module.css";
 
 export function PlanDaysScreen() {
   const { state, actions } = useApp();
+  const money = useMoney();
   return (
     <div className={ui.screen}>
       <PlanHeader />
@@ -56,7 +57,7 @@ export function PlanDaysScreen() {
                     onClick={() => actions.setDays(d.days)}
                   >
                     <span className={styles.dayLabel}>{d.label}</span>
-                    <span className={styles.dayPrice}>{euro(d.price)}</span>
+                    <span className={styles.dayPrice}>{money(d.price)}</span>
                     {selected ? (
                       <span className={styles.dayCheck}>
                         <Img src="/icons/check-circle-blue.svg" size={22} />

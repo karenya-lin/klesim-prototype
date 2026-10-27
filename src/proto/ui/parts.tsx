@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type ReactNode } from "react";
-import { FAQS, GUIDE_LINKS } from "../data";
+import { FAQS, GUIDE_LINKS, currencyOf } from "../data";
 import { useApp, type RouteId } from "../store";
 import { Img } from "./Img";
 import { ChatSupport, ChevronLeft, NavAccount, NavHome, NavSim, XMark } from "./icons";
@@ -54,9 +54,17 @@ export function CartButton({ soft, badge = true }: { soft?: boolean; badge?: boo
 }
 
 export function CurrencyButton({ soft }: { soft?: boolean }) {
+  const { state, actions } = useApp();
+  const cur = currencyOf(state.currency);
   return (
-    <button type="button" className={cx(styles.roundBtn, soft && styles.roundBtnSoft)} aria-label="Currency: Euro">
-      <span aria-hidden="true">€</span>
+    <button
+      type="button"
+      className={cx(styles.roundBtn, soft && styles.roundBtnSoft)}
+      aria-label={`Currency: ${cur.name} (${cur.code}). Change currency`}
+      aria-haspopup="dialog"
+      onClick={() => actions.openOverlay("currency")}
+    >
+      <span aria-hidden="true">{cur.symbol}</span>
       <Img src="/icons/caret-down-white.svg" size={16} eager />
     </button>
   );

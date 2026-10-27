@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { DESTINATIONS, PLACE_ROWS } from "../data";
-import { useApp } from "../store";
+import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { BackButton, BottomNav, CartButton, CurrencyButton, Hero, cx, ui } from "../ui/parts";
 import home from "./home.module.css";
@@ -12,6 +12,7 @@ const DEFAULT_RESULTS = ["canada", "colombia"];
 
 export function SearchScreen() {
   const { actions } = useApp();
+  const money = useMoney();
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -41,7 +42,7 @@ export function SearchScreen() {
 
           <section className={cx(home.promo, home.promoBlue, styles.promo)} aria-label="Search destinations">
             <div className={home.promoHead}>
-              <span>eSIM starting from €5.59!</span>
+              <span>eSIM starting from {money(5.59, { tight: true })}!</span>
             </div>
             <form
               className={home.promoBar}

@@ -1,7 +1,7 @@
 "use client";
 
-import { PLANS, euro, type Plan } from "../data";
-import { useApp } from "../store";
+import { PLANS, type Plan } from "../data";
+import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { Radio, cx, ui } from "../ui/parts";
 import { CouponRibbon, PlanBottomBar, PlanHeader } from "./PlanParts";
@@ -9,6 +9,7 @@ import styles from "./plans.module.css";
 
 function PlanCard({ plan }: { plan: Plan }) {
   const { state, actions } = useApp();
+  const money = useMoney();
   const selected = state.planId === plan.id;
   const select = () => actions.selectPlan(plan.id);
   return (
@@ -33,7 +34,7 @@ function PlanCard({ plan }: { plan: Plan }) {
           type="button"
           role="radio"
           aria-checked={selected}
-          aria-label={`${plan.title}${plan.unit ?? ""}, ${plan.duration}, from ${euro(plan.price)}`}
+          aria-label={`${plan.title}${plan.unit ?? ""}, ${plan.duration}, from ${money(plan.price)}`}
           className={styles.radioBtn}
           onClick={(e) => {
             e.stopPropagation();
@@ -59,11 +60,11 @@ function PlanCard({ plan }: { plan: Plan }) {
         </div>
         <div className={styles.priceCol}>
           <span className={styles.startFrom}>start from</span>
-          <span className={styles.priceBig}>{euro(plan.price)}</span>
+          <span className={styles.priceBig}>{money(plan.price)}</span>
           {plan.was ? (
             <span className={styles.was}>
               <span className="sr-only">was </span>
-              {euro(plan.was)}
+              {money(plan.was)}
             </span>
           ) : null}
         </div>

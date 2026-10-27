@@ -211,6 +211,27 @@
   border-radius: var(--r-pill);
 }
 
+/* "Let’s buy" as an icon: basket with a plus, 44px hit area */
+.buyBtn {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-dark);
+  transition: background-color 150ms ease;
+}
+
+.buyBtn:hover {
+  background: rgba(12, 6, 36, 0.06);
+}
+
+.buyBtn:focus-visible {
+  border-radius: var(--r-pill);
+}
+
 .chipRows {
   display: flex;
   flex-direction: column;
@@ -336,41 +357,15 @@
   color: var(--c-text-dark);
 }
 
-.medalBox {
-  position: absolute;
-  right: -58px;
-  top: -40.88px;
-  width: 148.235px;
-  height: 102.602px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
+/* Flattened Figma artwork (gold "1" medal, ribbon, sunburst). Anchored to the card's top-right like the
+   design, overlapping the card edge by 12px so the whole artwork stays inside the screen at any width. */
 .medal {
-  position: relative;
-  flex: none;
-  width: 134.718px;
-  height: 71.192px;
-  transform: rotate(14.47deg);
-  -webkit-mask-image: url("/icons/medal-mask.svg");
-  mask-image: url("/icons/medal-mask.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: 38.408px 15.563px;
-  mask-position: 38.408px 15.563px;
-  -webkit-mask-size: 76.869px 78.617px;
-  mask-size: 76.869px 78.617px;
-  overflow: hidden;
-}
-
-.medal img {
   position: absolute;
-  left: -9.16%;
-  top: 0.61%;
-  width: 120.25%;
-  height: 151.7%;
+  top: -20.5px;
+  right: -12px;
+  width: 63.25px;
+  height: 66.5px;
+  pointer-events: none;
 }
 
 .taxNote {

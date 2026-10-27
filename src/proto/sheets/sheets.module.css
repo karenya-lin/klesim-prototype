@@ -220,6 +220,25 @@
   line-height: normal;
 }
 
+.currencySymbol {
+  flex: none;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-g3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--c-text-dark);
+}
+
+.optionSelected .currencySymbol {
+  background: var(--c-primary-2);
+}
+
 .check {
   flex: none;
   width: 24px;
@@ -495,6 +514,16 @@ button.infoItem:hover {
 .successSub {
   font-size: 16px;
   text-align: center;
+}
+
+.successPaid {
+  align-self: center;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-g3);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-text-dark);
 }
 
 .successRich {

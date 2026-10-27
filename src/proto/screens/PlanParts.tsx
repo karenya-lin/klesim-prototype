@@ -1,11 +1,10 @@
 "use client";
 
 import { findDestination } from "../data";
-import { selectionPrice, useApp } from "../store";
+import { selectionPrice, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { CartAdd } from "../ui/icons";
 import { BackButton, CartButton, CurrencyButton, Hero, ShareButton, Stepper, cx, ui } from "../ui/parts";
-import { euro } from "../data";
 import styles from "./plans.module.css";
 
 export function PlanHeader() {
@@ -62,6 +61,7 @@ export function PlanHeader() {
 
 export function PlanBottomBar({ onCheckout }: { onCheckout: () => void }) {
   const { state, actions } = useApp();
+  const money = useMoney();
   const subtotal = selectionPrice(state) * state.qty;
   return (
     <div className={ui.barStack}>
@@ -69,7 +69,7 @@ export function PlanBottomBar({ onCheckout }: { onCheckout: () => void }) {
         <div className={ui.amount}>
           <span className={ui.amountLabel}>Subtotal (Tax excluded)</span>
           <span className={ui.amountValue} aria-live="polite">
-            {euro(subtotal)}
+            {money(subtotal)}
           </span>
         </div>
         <Stepper value={state.qty} onChange={actions.setQty} label="Number of eSIMs" />

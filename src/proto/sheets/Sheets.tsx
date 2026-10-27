@@ -1,8 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { DESTINATIONS, PLANS, SHEET_DESTINATIONS, euro, findDestination } from "../data";
-import { PAYMENT_LABEL, SAMPLE_COUPONS, maskEmail, useApp, type Coupon, type PaymentId } from "../store";
+import { CURRENCIES, DESTINATIONS, PLANS, SHEET_DESTINATIONS, destinationMeta, findDestination } from "../data";
+import {
+  PAYMENT_LABEL,
+  SAMPLE_COUPONS,
+  cartTotals,
+  maskEmail,
+  useApp,
+  useMoney,
+  type Coupon,
+  type PaymentId,
+} from "../store";
 import { Img } from "../ui/Img";
 import { ChatSupport, QuestionCircle } from "../ui/icons";
 import { cx, ui } from "../ui/parts";
@@ -44,6 +53,7 @@ type DestTab = "popular" | "country" | "regional";
 
 export function DestinationSheet() {
   const { state, actions } = useApp();
+  const money = useMoney();
   const [tab, setTab] = useState<DestTab>("popular");
   const [picked, setPicked] = useState(findDestination(state.destination).id);
 
@@ -113,7 +123,7 @@ export function DestinationSheet() {
               <Img src="/icons/esim-card.svg" width={60} height={40} />
               <span className={styles.optionText}>
                 <span className={styles.optionTitle}>{d.name}</span>
-                <span className={styles.optionMeta}>{d.meta}</span>
+                <span className={styles.optionMeta}>{destinationMeta(d, money)}</span>
               </span>
               {selected ? (
                 <span className={styles.check}>
@@ -132,6 +142,7 @@ export function DestinationSheet() {
 
 export function DetailsSheet() {
   const { state } = useApp();
+  const money = useMoney();
   const plan = PLANS.find((p) => p.id === (state.overlay?.planId ?? state.planId)) ?? PLANS[1];
   const dest = findDestination(state.destination);
   const rows: { title: string; body: string; icon?: "arrow" | "question" | "chat" }[] = [
@@ -163,7 +174,7 @@ export function DetailsSheet() {
           </strong>
           <span>4G / 5G</span>
         </span>
-        <span className={styles.planRowPrice}>{euro(plan.price)}</span>
+        <span className={styles.planRowPrice}>{money(plan.price)}</span>
       </div>
       <div className={styles.infoGrid}>
         <div className={styles.infoItem}>
@@ -238,6 +249,7 @@ const TERMS = [
 
 export function TermsSheet() {
   const { state } = useApp();
+  const money = useMoney();
   const plan = PLANS.find((p) => p.id === (state.overlay?.planId ?? state.planId)) ?? PLANS[1];
   const dest = findDestination(state.destination);
   return (
@@ -251,7 +263,7 @@ export function TermsSheet() {
           </strong>
           <span>4G / 5G</span>
         </span>
-        <span className={styles.planRowPrice}>{euro(plan.price)}</span>
+        <span className={styles.planRowPrice}>{money(plan.price)}</span>
       </div>
       <div className={styles.infoItem}>
         <span className={styles.infoText}>
@@ -267,6 +279,7 @@ export function TermsSheet() {
 
 export function CouponSheet() {
   const { state, actions } = useApp();
+  const money = useMoney();
   const [wallet, setWallet] = useState<Coupon[]>(() => {
     const extra = SAMPLE_COUPONS.filter((s) => !state.coupons.some((c) => c.code === s.code));
     return state.coupons.length ? [...state.coupons, ...extra] : [];
@@ -296,7 +309,7 @@ export function CouponSheet() {
         <>
           <div className={ui.amount}>
             <span className={ui.amountLabel}>Total coupon</span>
-            <span className={ui.amountValue}>{euro(total)}</span>
+            <span className={ui.amountValue}>{money(total)}</span>
           </div>
           <button
             type="button"
@@ -352,7 +365,7 @@ export function CouponSheet() {
                 onClick={() => setSelected(on ? selected.filter((x) => x !== c.code) : [...selected, c.code])}
               >
                 <span className={styles.optionText}>
-                  <span className={styles.optionTitle}>€{c.amount.toFixed(2)}</span>
+                  <span className={styles.optionTitle}>{money(c.amount, { tight: true })}</span>
                   <span className={styles.optionMeta}>
                     {c.code} - {c.valid}
                   </span>
@@ -464,7 +477,9 @@ function HostedCardFields() {
 /* ---------- Purchase successful (112:16566) ---------- */
 
 export function SuccessDialog() {
-  const { actions } = useApp();
+  const { state, actions } = useApp();
+  const money = useMoney();
+  const paid = cartTotals(state).total;
   return (
     <Sheet
       variant="dialog"
@@ -496,6 +511,9 @@ export function SuccessDialog() {
           <span aria-hidden="true">🎉 </span>Purchase Successful!
         </p>
         <p className={styles.successSub}>Nice! Let’s activate~</p>
+        <p className={styles.successPaid}>
+          Paid {money(paid)} · charged in {state.currency}
+        </p>
         <div className={styles.successRich}>
           <p>Next Steps:</p>
           <ol>
@@ -556,6 +574,53 @@ export function ResendEmailDialog() {
   );
 }
 
+/* ---------- Currency (no Figma frame: built from the payment sheet pattern) ---------- */
+
+export function CurrencySheet() {
+  const { state, actions } = useApp();
+  return (
+    <Sheet
+      title="Choose currency"
+      titleText="currency picker"
+      footer={
+        <button type="button" className={cx(ui.btn, ui.btnPrimary, ui.btnBlock)} onClick={() => actions.closeOverlay()}>
+          Continue
+        </button>
+      }
+    >
+      <div className={styles.options} role="radiogroup" aria-label="Currencies">
+        {CURRENCIES.map((c) => {
+          const selected = state.currency === c.code;
+          return (
+            <button
+              key={c.code}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              className={cx(styles.option, selected && styles.optionSelected)}
+              onClick={() => actions.setCurrency(c.code)}
+            >
+              <span className={styles.currencySymbol} aria-hidden="true">
+                {c.symbol}
+              </span>
+              <span className={styles.optionText}>
+                <span className={styles.optionTitle}>{c.code}</span>
+                <span className={styles.optionMeta}>{c.name}</span>
+              </span>
+              {selected ? (
+                <span className={styles.check}>
+                  <Img src="/icons/check-circle-blue.svg" size={22} />
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+      <p className={styles.hint}>Prices update everywhere. Exchange rates in this prototype are fixed sample values.</p>
+    </Sheet>
+  );
+}
+
 /* ---------- host ---------- */
 
 export function OverlayHost() {
@@ -577,6 +642,8 @@ export function OverlayHost() {
       return <SuccessDialog />;
     case "resendEmail":
       return <ResendEmailDialog />;
+    case "currency":
+      return <CurrencySheet />;
     default:
       return null;
   }

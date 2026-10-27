@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 import { PLACE_ROWS, WHY_US } from "../data";
-import { useApp } from "../store";
+import { useApp, useMoney } from "../store";
 import { BrandWordmark } from "../ui/Brand";
 import { Img } from "../ui/Img";
+import { CartAdd } from "../ui/icons";
 import {
   BottomNav,
   CartButton,
@@ -19,6 +20,7 @@ import styles from "./home.module.css";
 
 export function HomeScreen() {
   const { actions } = useApp();
+  const money = useMoney();
   const [tab, setTab] = useState<"country" | "regional">("country");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -150,11 +152,7 @@ export function HomeScreen() {
                   <Img src="/icons/esim-card.svg" width={60} height={40} />
                   <span className={styles.offerTitle}>eSim France Format : eSim - Package:100GB</span>
                 </span>
-                <span className={styles.medalBox} aria-hidden="true">
-                  <span className={styles.medal}>
-                    <Img src="/img/medal.webp" />
-                  </span>
-                </span>
+                <Img src="/img/medal.webp" width={64} height={67} className={styles.medal} />
                 <span className={styles.taxNote}>Amount (Tax excluded)</span>
                 <span className={styles.priceRow}>
                   <span className={styles.duration}>
@@ -162,7 +160,7 @@ export function HomeScreen() {
                     12 days
                   </span>
                   <span className={styles.price}>
-                    <span className={styles.priceBig}>€ 50.00</span>
+                    <span className={styles.priceBig}>{money(50)}</span>
                     <span className={styles.priceUnit}>/100GB</span>
                   </span>
                 </span>
@@ -174,8 +172,14 @@ export function HomeScreen() {
                 <h2 id="why-h" className={ui.h20}>
                   Why choose us
                 </h2>
-                <button type="button" className={ui.linkSf} onClick={() => openPlans("Global")}>
-                  Let’s buy
+                <button
+                  type="button"
+                  className={styles.buyBtn}
+                  aria-label="Let’s buy"
+                  title="Let’s buy"
+                  onClick={() => openPlans("Global")}
+                >
+                  <CartAdd />
                 </button>
               </div>
               <div className={cx(ui.card, styles.whyCard)}>

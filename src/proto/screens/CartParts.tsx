@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { euro } from "../data";
-import { PAYMENT_LABEL, cartTotals, useApp } from "../store";
+import { currencyOf } from "../data";
+import { PAYMENT_LABEL, cartTotals, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { ChevronSmall } from "../ui/icons";
 import { BackButton, CloseButton, CurrencyButton, Hero, ShareButton, cx, ui } from "../ui/parts";
@@ -93,12 +93,13 @@ export function CardHead({
 
 export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
   const { state, actions } = useApp();
+  const money = useMoney();
   const [open, setOpen] = useState(!!defaultOpen);
   const totals = cartTotals(state);
   return (
     <section className={cx(styles.card, open && styles.cardOpen)} aria-label="Cart items">
       <CardHead
-        title={open ? `Cart items (${totals.count})` : `Cart items (${totals.count}) - ${euro(totals.product)}`}
+        title={open ? `Cart items (${totals.count})` : `Cart items (${totals.count}) - ${money(totals.product)}`}
         sub="Maximum 10 cards per purchase"
         open={open}
         onToggle={() => setOpen(!open)}
@@ -133,10 +134,10 @@ export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
                       {c.was ? (
                         <span className={styles.lineWas}>
                           <span className="sr-only">was </span>
-                          {euro(c.was)}
+                          {money(c.was)}
                         </span>
                       ) : null}
-                      <span className={styles.lineNow}>{euro(c.price)}</span>
+                      <span className={styles.lineNow}>{money(c.price)}</span>
                     </span>
                     <div className={ui.stepper} role="group" aria-label={`${c.title} quantity`}>
                       {c.qty <= 1 ? (
@@ -190,6 +191,7 @@ export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
 
 export function CouponRow() {
   const { state, actions } = useApp();
+  const money = useMoney();
   const totals = cartTotals(state);
   const has = state.coupons.length > 0;
   return (
@@ -202,7 +204,7 @@ export function CouponRow() {
       >
         <span className={styles.cardHeadText}>
           <span className={styles.cardTitle}>
-            {has ? `Coupon (${state.coupons.length}) - ${euro(totals.coupon)}` : "Do you have coupon?"}
+            {has ? `Coupon (${state.coupons.length}) - ${money(totals.coupon)}` : "Do you have coupon?"}
           </span>
         </span>
         <span className={cx(styles.iconCircle, has && styles.iconCircleDark)}>
@@ -279,10 +281,13 @@ export function ConsentRow({ error }: { error?: boolean }) {
   );
 }
 
-export function TotalsBar({ label, onPress }: { label: string; onPress: () => void }) {
+/** `payment`: the step where the order is paid, so the charge currency and amount are spelled out. */
+export function TotalsBar({ label, onPress, payment }: { label: string; onPress: () => void; payment?: boolean }) {
   const { state } = useApp();
+  const money = useMoney();
   const [open, setOpen] = useState(false);
   const t = cartTotals(state);
+  const cur = currencyOf(state.currency);
   return (
     <div className={styles.totals}>
       {open ? (
@@ -293,19 +298,19 @@ export function TotalsBar({ label, onPress }: { label: string; onPress: () => vo
           </div>
           <div className={styles.totalRow}>
             <span>Product</span>
-            <span>{euro(t.product)}</span>
+            <span>{money(t.product)}</span>
           </div>
           <div className={styles.totalRow}>
             <span>Coupon</span>
-            <span>-{euro(t.coupon)}</span>
+            <span>-{money(t.coupon)}</span>
           </div>
           <div className={styles.totalRow}>
             <span>Service fee</span>
-            <span>{euro(t.fee)}</span>
+            <span>{money(t.fee)}</span>
           </div>
           <div className={styles.totalRow}>
             <span>VAT</span>
-            <span>{euro(t.vat)}</span>
+            <span>{money(t.vat)}</span>
           </div>
         </div>
       ) : null}
@@ -321,10 +326,19 @@ export function TotalsBar({ label, onPress }: { label: string; onPress: () => vo
             <span className={ui.amountLabel}>Total amount</span>
             <ChevronSmall up={!open} />
           </span>
-          <span className={ui.amountValue}>{euro(t.total)}</span>
+          <span className={ui.amountValue}>{money(t.total)}</span>
+          {payment ? (
+            <span className={styles.chargeLine}>
+              You’ll be charged in {cur.code}
+            </span>
+          ) : null}
         </button>
-        <button type="button" className={cx(ui.btn, ui.btnPrimary, styles.buy)} onClick={onPress}>
-          {label}
+        <button
+          type="button"
+          className={cx(ui.btn, ui.btnPrimary, styles.buy, payment && styles.buyWide)}
+          onClick={onPress}
+        >
+          {payment ? `${label} ${money(t.total)}` : label}
         </button>
       </div>
     </div>

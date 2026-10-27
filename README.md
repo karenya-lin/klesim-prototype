@@ -26,6 +26,8 @@ On a desktop browser the app sits in a phone frame (390 × 844). On a phone it f
 - Password sign-in succeeds with any valid email and a password of 8+ characters; anything else shows the
   generic error, and repeated failures show a short wait.
 - Card details are never collected: the card form is a visual placeholder for a provider-hosted field.
+- The € button in the header switches the currency (EUR, USD, GBP, JPY, TWD, AUD). Prices are stored in EUR
+  and converted with fixed sample rates (`src/proto/data.ts`), not live exchange rates.
 
 ## Stack
 

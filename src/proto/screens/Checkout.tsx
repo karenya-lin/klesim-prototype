@@ -185,7 +185,7 @@ export function CheckoutScreen() {
           ) : null}
         </div>
       </div>
-      <TotalsBar label="Purchase" onPress={purchase} />
+      <TotalsBar label="Purchase" onPress={purchase} payment />
     </div>
   );
 }
