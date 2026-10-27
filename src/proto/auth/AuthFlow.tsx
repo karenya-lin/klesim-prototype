@@ -62,15 +62,6 @@ function Legal() {
   );
 }
 
-function SsoIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8.5 12h7m-3-3 3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export function AuthFlow({ onDone }: { onDone?: () => void }) {
   const { actions } = useApp();
   const [step, setStep] = useState<Step>({ id: "start" });
@@ -317,11 +308,11 @@ function SsoButtons({ onPick }: { onPick: () => void }) {
   return (
     <>
       <button type="button" className={styles.sso} onClick={onPick}>
-        <SsoIcon />
+        <Img src="/icons/google-g.png" size={20} eager />
         Continue with Google
       </button>
       <button type="button" className={styles.sso} onClick={onPick}>
-        <SsoIcon />
+        <Img src="/icons/facebook-f.png" size={20} eager />
         Continue with Facebook
       </button>
       <div className={styles.or} aria-hidden="true">

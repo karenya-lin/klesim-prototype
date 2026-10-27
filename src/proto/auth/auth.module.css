@@ -38,26 +38,29 @@
   margin-top: -8px;
 }
 
+/* Google Identity branding, light theme: white fill, 1px #747775 stroke, #1F1F1F text,
+   standard G unaltered, 10px between mark and label. Facebook shares the frame so the
+   two options carry equal weight, as Google's guidelines ask. */
 .sso {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 10px;
   width: 100%;
-  padding: 14px 16px;
+  padding: 15px 12px;
   border-radius: 9999px;
-  border: 2px solid var(--c-g2);
+  border: 1px solid #747775;
   background: #fff;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: -0.015em;
-  color: var(--c-text-dark);
+  color: #1f1f1f;
   transition: background-color 150ms ease;
 }
 
 .sso:hover {
-  background: var(--c-surface-light);
+  background: #f8f9fa;
 }
 
 .sso:focus-visible {
