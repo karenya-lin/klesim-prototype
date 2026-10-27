@@ -139,6 +139,11 @@
   cursor: not-allowed;
 }
 
+/* full-screen sign-in / register flow opened from Profile */
+.screenCard {
+  padding-top: 16px;
+}
+
 .hintSmall {
   margin-top: -6px;
   font-size: 11px;

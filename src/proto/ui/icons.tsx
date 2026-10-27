@@ -128,6 +128,15 @@ export function ChevronSmall({ className, up }: P & { up?: boolean }) {
   );
 }
 
+export function Mail({ className, size = 20 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <rect x="2.25" y="4.25" width="15.5" height="11.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="m3 5.5 7 5 7-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /** Error mark (circle with an exclamation) that follows the text colour, used next to inline error messages. */
 export function AlertCircle({ className, size = 20 }: P) {
   return (

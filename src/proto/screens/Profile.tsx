@@ -1,6 +1,7 @@
 "use client";
 
-import { AuthFlow } from "../auth/AuthFlow";
+import { useEffect, useRef } from "react";
+import { AuthEntry } from "../auth/AuthFlow";
 import { PAYMENT_LABEL, useApp } from "../store";
 import { BrandWordmark } from "../ui/Brand";
 import { BottomNav, CartButton, CurrencyButton, Hero, cx, ui } from "../ui/parts";
@@ -10,6 +11,19 @@ import styles from "./esim.module.css";
 export function ProfileScreen() {
   const { state, actions } = useApp();
   const user = state.user;
+  const isTop = state.stack[state.stack.length - 1]?.id === "profile";
+  const emailRef = useRef<HTMLButtonElement>(null);
+  const accountRef = useRef<HTMLElement>(null);
+  const openedAuth = useRef(false);
+
+  // Coming back from the full-screen sign-in flow: focus returns to what opened it,
+  // or to the account card when the flow ended signed in.
+  useEffect(() => {
+    if (!isTop || !openedAuth.current) return;
+    openedAuth.current = false;
+    (user ? accountRef.current : emailRef.current)?.focus();
+  }, [isTop, user]);
+
   return (
     <div className={ui.screen}>
       <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
@@ -27,7 +41,7 @@ export function ProfileScreen() {
         <div className={cart.panelInner}>
           {user ? (
             <>
-              <section className={styles.profileCard} aria-label="Account">
+              <section className={styles.profileCard} aria-label="Account" ref={accountRef} tabIndex={-1}>
                 <div className={styles.profileHead}>
                   <strong>Hi, {user.name}</strong>
                   <span>eSIM will be sent to {user.email}.</span>
@@ -69,7 +83,13 @@ export function ProfileScreen() {
                   <span className={cart.cardSub}>Keep your eSIMs, orders and receipts in one place.</span>
                 </span>
               </div>
-              <AuthFlow />
+              <AuthEntry
+                emailRef={emailRef}
+                onEmail={() => {
+                  openedAuth.current = true;
+                  actions.navigate("auth");
+                }}
+              />
             </section>
           )}
         </div>

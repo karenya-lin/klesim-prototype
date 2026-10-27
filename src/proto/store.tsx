@@ -13,7 +13,8 @@ export type RouteId =
   | "checkout"
   | "myEsim"
   | "esimDetail"
-  | "profile";
+  | "profile"
+  | "auth";
 
 export type Route = { key: string; id: RouteId };
 export type Transition = "push" | "pop" | "fade" | "none";

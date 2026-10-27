@@ -15,6 +15,7 @@ import { CheckoutScreen } from "./screens/Checkout";
 import { MyEsimScreen } from "./screens/MyEsim";
 import { EsimDetailScreen } from "./screens/EsimDetail";
 import { ProfileScreen } from "./screens/Profile";
+import { AuthScreen } from "./screens/AuthScreen";
 import styles from "./app.module.css";
 
 const SCREENS: Record<RouteId, () => ReactNode> = {
@@ -28,6 +29,7 @@ const SCREENS: Record<RouteId, () => ReactNode> = {
   myEsim: () => <MyEsimScreen />,
   esimDetail: () => <EsimDetailScreen />,
   profile: () => <ProfileScreen />,
+  auth: () => <AuthScreen />,
 };
 
 const DURATION = 320;

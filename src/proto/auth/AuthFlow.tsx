@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type Ref } from "react";
 import { nameFromEmail, useApp } from "../store";
 import { Field, PasswordField } from "../ui/Field";
 import { Img } from "../ui/Img";
+import { Mail } from "../ui/icons";
 import { cx, ui } from "../ui/parts";
 import styles from "./auth.module.css";
 
@@ -15,6 +16,9 @@ export const SIGN_IN_WAIT_SECONDS = 60;
 export const CODE_ATTEMPTS = 5;
 export const CODE_RESEND_SECONDS = 60;
 export const CODE_EXPIRY_MINUTES = 10;
+
+/** Account the prototype signs in with when Google or Facebook is picked. */
+export const SSO_SAMPLE_EMAIL = "zylan.weather@example.com";
 
 const GENERIC_SIGN_IN_ERROR = "Sign-in failed. Check your email and password.";
 const GENERIC_RESET_MESSAGE = "If that email is registered, we will send you a reset link.";
@@ -29,12 +33,39 @@ export function passwordRules(pw: string) {
   ];
 }
 
-type Step =
+export type Step =
   | { id: "start" }
   | { id: "password" }
   | { id: "register" }
   | { id: "forgot"; sent: boolean }
   | { id: "code"; purpose: "login" | "verify" | "device"; email: string };
+
+/** Step history, so a screen header can step back through the flow. */
+export function useAuthSteps(first: Step = { id: "start" }) {
+  const [history, setHistory] = useState<Step[]>([first]);
+  return {
+    step: history[history.length - 1],
+    depth: history.length,
+    push: (s: Step) => setHistory((h) => [...h, s]),
+    replace: (s: Step) => setHistory((h) => [...h.slice(0, -1), s]),
+    back: () => setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h)),
+  };
+}
+
+export type AuthSteps = ReturnType<typeof useAuthSteps>;
+
+export function authTitle(step: Step) {
+  switch (step.id) {
+    case "register":
+      return "Create account";
+    case "forgot":
+      return "Reset password";
+    case "code":
+      return step.purpose === "verify" ? "Verify your email" : "Enter code";
+    default:
+      return "Sign in";
+  }
+}
 
 function useCountdown(initial: number) {
   const [left, setLeft] = useState(initial);
@@ -62,9 +93,45 @@ function Legal() {
   );
 }
 
-export function AuthFlow({ onDone }: { onDone?: () => void }) {
+/**
+ * `inline` (checkout): SSO buttons on top, steps swap in place.
+ * `screen` (Profile's full-screen flow): no SSO (the Profile entry already offers it), `nav` comes from the
+ * screen so its back arrow can step back, and the first field takes focus on every step.
+ */
+export function AuthFlow({
+  onDone,
+  nav,
+  variant = "inline",
+}: {
+  onDone?: () => void;
+  nav?: AuthSteps;
+  variant?: "inline" | "screen";
+}) {
+  const own = useAuthSteps();
+  const { step, push, replace } = nav ?? own;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const stepKey = step.id === "code" ? `code-${step.purpose}` : step.id;
+
+  useEffect(() => {
+    if (variant !== "screen") return;
+    rootRef.current?.querySelector<HTMLElement>("input:not([disabled])")?.focus();
+  }, [variant, stepKey]);
+
+  return (
+    <div ref={rootRef}>
+      <StepForms step={step} push={push} replace={replace} onDone={onDone} sso={variant === "inline"} />
+    </div>
+  );
+}
+
+function StepForms({
+  step,
+  push,
+  replace,
+  onDone,
+  sso: showSso,
+}: Pick<AuthSteps, "step" | "push" | "replace"> & { onDone?: () => void; sso: boolean }) {
   const { actions } = useApp();
-  const [step, setStep] = useState<Step>({ id: "start" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -79,12 +146,12 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
     onDone?.();
   };
 
-  const sso = () => finish("zylan.weather@example.com");
+  const sso = () => finish(SSO_SAMPLE_EMAIL);
 
   const go = (s: Step) => {
     setFormError(null);
     setEmailError(null);
-    setStep(s);
+    push(s);
   };
 
   if (step.id === "code") {
@@ -111,7 +178,7 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
             return;
           }
           setEmailError(null);
-          setStep({ id: "forgot", sent: true });
+          replace({ id: "forgot", sent: true });
         }}
       >
         <p className={styles.lead}>Enter your email and we’ll help you reset your password.</p>
@@ -153,7 +220,7 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
           if (emailValid && password.length >= 8) {
             setFailures(0);
             setFormError(null);
-            setStep({ id: "code", purpose: "device", email: email.trim() });
+            push({ id: "code", purpose: "device", email: email.trim() });
             return;
           }
           const n = failures + 1;
@@ -206,10 +273,10 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
             return;
           }
           if (!ready) return;
-          setStep({ id: "code", purpose: "verify", email: email.trim() });
+          push({ id: "code", purpose: "verify", email: email.trim() });
         }}
       >
-        <SsoButtons onPick={sso} />
+        {showSso ? <SsoButtons onPick={sso} /> : null}
         <Field
           label="Email address"
           type="email"
@@ -271,10 +338,10 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
           setEmailError("Enter a valid email address.");
           return;
         }
-        setStep({ id: "code", purpose: "login", email: email.trim() });
+        push({ id: "code", purpose: "login", email: email.trim() });
       }}
     >
-      <SsoButtons onPick={sso} />
+      {showSso ? <SsoButtons onPick={sso} /> : null}
       <Field
         label="Email address"
         type="email"
@@ -304,7 +371,7 @@ export function AuthFlow({ onDone }: { onDone?: () => void }) {
   );
 }
 
-function SsoButtons({ onPick }: { onPick: () => void }) {
+export function SsoButtons({ onPick }: { onPick: () => void }) {
   return (
     <>
       <button type="button" className={styles.sso} onClick={onPick}>
@@ -321,6 +388,21 @@ function SsoButtons({ onPick }: { onPick: () => void }) {
         <span />
       </div>
     </>
+  );
+}
+
+/** Profile entry: SSO plus a way into the full-screen email flow. */
+export function AuthEntry({ onEmail, emailRef }: { onEmail: () => void; emailRef?: Ref<HTMLButtonElement> }) {
+  const { actions } = useApp();
+  return (
+    <div className={styles.stack}>
+      <SsoButtons onPick={() => actions.signIn({ email: SSO_SAMPLE_EMAIL, name: nameFromEmail(SSO_SAMPLE_EMAIL) })} />
+      <button ref={emailRef} type="button" className={styles.sso} onClick={onEmail}>
+        <Mail size={20} />
+        Continue with email
+      </button>
+      <Legal />
+    </div>
   );
 }
 
