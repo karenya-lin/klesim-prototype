@@ -70,16 +70,12 @@ export function CartAdd({ className, size = 24 }: P) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M3.86 16.43c-.84-3.37-1.26-5.05-.38-6.18.89-1.13 2.62-1.13 6.1-1.13h4.84c3.48 0 5.21 0 6.1 1.13.88 1.13.46 2.81-.38 6.18-.54 2.14-.8 3.21-1.6 3.84-.8.62-1.9.62-4.11.62H9.57c-2.2 0-3.31 0-4.11-.62-.8-.63-1.06-1.7-1.6-3.84Z"
+        d="M4.5 8.5h15l-.86 9.87A1.8 1.8 0 0 1 16.85 20H7.15a1.8 1.8 0 0 1-1.79-1.63L4.5 8.5Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="2"
+        strokeLinejoin="round"
       />
-      <path
-        d="m19.5 9.5-.71-2.61c-.27-1-.4-1.5-.68-1.88a2.5 2.5 0 0 0-1.1-.84C16.58 4 16.07 4 15.05 4M4.5 9.5l.71-2.61c.27-1 .4-1.5.68-1.88a2.5 2.5 0 0 1 1.1-.84C7.42 4 7.93 4 8.95 4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path d="M12 12.5v5M9.5 15h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M8.5 8.5V7.5a3.5 3.5 0 0 1 7 0v1M12 11.5v5M9.5 14h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

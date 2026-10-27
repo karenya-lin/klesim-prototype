@@ -211,11 +211,11 @@
   border-radius: var(--r-pill);
 }
 
-/* "Let’s buy" as an icon: basket with a plus, 44px hit area */
+/* "Let’s buy" as an icon: shopping bag with a plus, 44px hit area, glyph edge on the text edge */
 .buyBtn {
   width: 44px;
   height: 44px;
-  margin-right: -10px;
+  margin-right: -13px;
   border-radius: var(--r-pill);
   display: inline-flex;
   align-items: center;

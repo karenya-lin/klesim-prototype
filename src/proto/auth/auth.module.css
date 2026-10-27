@@ -46,18 +46,18 @@
   width: 100%;
   padding: 14px 16px;
   border-radius: 9999px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--c-g2);
   background: #fff;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: -0.015em;
-  color: #1e293b;
+  color: var(--c-text-dark);
   transition: background-color 150ms ease;
 }
 
 .sso:hover {
-  background: #f8fafc;
+  background: var(--c-surface-light);
 }
 
 .sso:focus-visible {
