@@ -151,7 +151,8 @@ type Action =
   | { type: "signOut" }
   | { type: "setBilling"; billing: Billing | null }
   | { type: "setCurrency"; currency: CurrencyCode }
-  | { type: "purchase" };
+  | { type: "purchase" }
+  | { type: "clearOrder" };
 
 function top(stack: Route[]) {
   return stack[stack.length - 1];
@@ -221,11 +222,9 @@ function reducer(state: State, action: Action): State {
     case "overlayClosing":
       return state.overlay ? { ...state, overlay: { ...state.overlay, closing: true } } : state;
     case "overlayClosed":
-      if (!state.overlay?.closing) return state;
-      // the order is cleared once the confirmation is dismissed, so the totals behind it stay intact
-      return state.overlay.id === "success"
-        ? { ...state, overlay: null, cart: [], coupons: [], consent: false }
-        : { ...state, overlay: null };
+      return state.overlay?.closing ? { ...state, overlay: null } : state;
+    case "clearOrder":
+      return { ...state, cart: [], coupons: [], consent: false };
     case "toast":
       return {
         ...state,
@@ -294,6 +293,14 @@ function createActions(dispatch: (a: Action) => void) {
       after?.();
     }, OVERLAY_MS);
   };
+  // The order is cleared only after the confirmation has closed and any screen change has finished,
+  // so the totals behind the dialog never flash to zero during the cross-fade.
+  const closeSuccess = (after?: () => void) => {
+    closeOverlay(() => {
+      after?.();
+      window.setTimeout(() => dispatch({ type: "clearOrder" }), 420);
+    });
+  };
   return {
     navigate: (id: RouteId, transition: Transition = "push") => dispatch({ type: "navigate", id, transition }),
     back: () => dispatch({ type: "back" }),
@@ -301,6 +308,7 @@ function createActions(dispatch: (a: Action) => void) {
     transitionEnd: (navId: number) => dispatch({ type: "transitionEnd", navId }),
     openOverlay: (id: OverlayId, planId?: string) => dispatch({ type: "openOverlay", id, planId }),
     closeOverlay,
+    closeSuccess,
     toast: (kind: ToastKind, title: string, text?: string) => dispatch({ type: "toast", kind, title, text }),
     toastDone: (id: number) => dispatch({ type: "toastDone", id }),
     setDestination: (name: string) => dispatch({ type: "setDestination", name }),

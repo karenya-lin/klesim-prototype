@@ -486,20 +486,20 @@ export function SuccessDialog() {
       hideTitle
       title="Purchase successful"
       titleText="purchase confirmation"
-      onClose={() => actions.closeOverlay()}
+      onClose={() => actions.closeSuccess()}
       footer={
         <div className={cx(styles.footerCol)} style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
           <button
             type="button"
             className={cx(ui.btn, ui.btnPrimary, ui.btnBlock)}
-            onClick={() => actions.closeOverlay(() => actions.tab("myEsim"))}
+            onClick={() => actions.closeSuccess(() => actions.tab("myEsim"))}
           >
             View my eSIM
           </button>
           <button
             type="button"
             className={cx(ui.btn, ui.btnLight, ui.btnBlock)}
-            onClick={() => actions.closeOverlay(() => actions.navigate("guide"))}
+            onClick={() => actions.closeSuccess(() => actions.navigate("guide"))}
           >
             How to activate
           </button>
