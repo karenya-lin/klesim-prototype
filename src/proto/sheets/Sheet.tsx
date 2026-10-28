@@ -9,6 +9,8 @@ type Props = {
   title: ReactNode;
   titleText?: string;
   leading?: ReactNode;
+  /** pinned under the title row, e.g. a search field */
+  subhead?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
   variant?: "sheet" | "dialog";
@@ -24,7 +26,7 @@ function focusables(root: HTMLElement) {
   ).filter((el) => !el.hasAttribute("inert"));
 }
 
-export function Sheet({ title, titleText, leading, children, footer, variant = "sheet", hideTitle, onClose }: Props) {
+export function Sheet({ title, titleText, leading, subhead, children, footer, variant = "sheet", hideTitle, onClose }: Props) {
   const { state, actions } = useApp();
   const closing = state.overlay?.closing ?? false;
   const panelRef = useRef<HTMLDivElement>(null);
@@ -72,12 +74,15 @@ export function Sheet({ title, titleText, leading, children, footer, variant = "
         tabIndex={-1}
       >
         <div className={styles.body}>
-          <div className={cx(styles.head, hideTitle && styles.headEnd)}>
-            {leading}
-            <h2 id={titleId} className={cx(styles.title, hideTitle && "sr-only")}>
-              {title}
-            </h2>
-            <CloseButton onClick={close} label={`Close ${titleText ?? "dialog"}`} />
+          <div className={cx(styles.headWrap, subhead ? styles.headWrapSub : null)}>
+            <div className={cx(styles.head, hideTitle && styles.headEnd)}>
+              {leading}
+              <h2 id={titleId} className={cx(styles.title, hideTitle && "sr-only")}>
+                {title}
+              </h2>
+              <CloseButton onClick={close} label={`Close ${titleText ?? "dialog"}`} />
+            </div>
+            {subhead}
           </div>
           {children}
         </div>

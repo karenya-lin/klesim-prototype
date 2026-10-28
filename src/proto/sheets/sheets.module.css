@@ -85,23 +85,35 @@
   flex-shrink: 0;
 }
 
-/* title row + close stay pinned while the sheet body scrolls (bleeds over the body padding;
-   sticky offsets count from the body's content edge, hence -16px) */
-.head {
+/* title row + close (and an optional sub-row such as a search field) stay pinned while the sheet
+   body scrolls; bleeds over the body padding, and sticky offsets count from the body's content
+   edge, hence -16px */
+.headWrap {
   position: sticky;
   top: -16px;
   z-index: 3;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: -16px -16px 0;
+  padding: 16px 16px 0;
+  background: var(--c-surface-light);
+}
+
+.headWrapSub {
+  padding-bottom: 12px;
+}
+
+.head {
+  display: flex;
   align-items: center;
   gap: 10px;
-  margin: -16px -16px 0;
-  padding: 20px 16px 4px;
-  background: var(--c-surface-light);
+  padding: 4px 0;
 }
 
 /* hairline under the pinned row once the body has scrolled */
 @supports (animation-timeline: scroll()) {
-  .head {
+  .headWrap {
     animation: headStuck linear both;
     animation-timeline: scroll(nearest block);
     animation-range: 0 24px;
@@ -597,4 +609,234 @@ button.infoItem:hover {
   justify-content: space-between;
   font-size: 16px;
   color: var(--c-text-dark);
+}
+
+/* ---------- coverage list ---------- */
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 0 4px 0 20px;
+  border-radius: var(--r-pill);
+  border: 2px solid var(--c-g2);
+  background: var(--c-surface);
+  transition: border-color 150ms ease;
+}
+
+.searchField:focus-within {
+  border-color: var(--c-focus);
+}
+
+.searchField input {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--c-text-dark);
+}
+
+.searchField input::placeholder {
+  color: var(--c-text-muted);
+}
+
+.searchField input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* the browser's own clear control is replaced by a 44 px button */
+.searchField input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchIcon,
+.searchClear {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-sub);
+}
+
+.searchClear:hover {
+  background: var(--c-g3);
+}
+
+.searchClear:focus-visible {
+  border-radius: var(--r-pill);
+}
+
+.coverageCount {
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
+.coverageGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coverageGroupHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coverageArea {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: normal;
+  color: var(--c-text-dark);
+}
+
+.coverageList {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 16px;
+  border-radius: var(--r-20);
+  background: var(--c-surface);
+  border: 1px solid var(--c-g2);
+}
+
+.coverageRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  font-size: 16px;
+  color: var(--c-text-dark);
+}
+
+.coverageRow + .coverageRow {
+  border-top: 1px solid var(--c-g3);
+}
+
+.flag {
+  flex: none;
+  width: 28px;
+  display: inline-flex;
+  justify-content: center;
+  font-family: var(--font-flags), "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.flagBig {
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  font-size: 26px;
+}
+
+.coverageEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--c-text-sub);
+}
+
+.coverageEmpty strong {
+  font-size: 16px;
+  color: var(--c-text-dark);
+}
+
+.coverageEmpty button {
+  margin-top: 8px;
+}
+
+.coverageEmptyIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--c-g3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- available regions ---------- */
+.introCard {
+  flex: none;
+}
+
+.areaList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.areaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: var(--r-8);
+  background: var(--c-surface);
+  color: var(--c-text-dark);
+}
+
+.areaHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.areaHead strong {
+  font-size: 16px;
+}
+
+.areaHead span {
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
+.areaTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.areaPartners {
+  font-size: 14px;
+  color: var(--c-text-sub);
+}
+
+.noteCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: var(--r-8);
+  border: 1px solid var(--c-g2);
+  background: var(--c-surface);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--c-text-sub);
+}
+
+.noteCard strong {
+  font-size: 16px;
+  color: var(--c-text-dark);
+}
+
+.noteCard ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 18px;
+  list-style: disc;
 }

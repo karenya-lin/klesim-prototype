@@ -19,27 +19,28 @@ export type Destination = {
   network: string;
   /** lowest plan price in EUR (converted for display) */
   from?: number;
-  /** extra coverage note shown after the price, e.g. "35 countries/regions" */
-  coverage?: string;
-  regions: string;
   kind: "country" | "region";
 };
 
 export const DESTINATIONS: Destination[] = [
-  { id: "europe", name: "Europe", network: "4G / 5G", from: 5, coverage: "35 countries/regions", regions: "35 countries/regions", kind: "region" },
-  { id: "france", name: "France", network: "4G / 5G", from: 5, regions: "1 country", kind: "country" },
-  { id: "global", name: "Global", network: "4G / 5G", from: 5, coverage: "35 countries/regions", regions: "112 countries/regions", kind: "region" },
-  { id: "indonesia", name: "Indonesia", network: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "england", name: "England", network: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "united-states", name: "United States", network: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "colombia", name: "Colombia", network: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "australia", name: "Australia", network: "4G / 5G", regions: "1 country", kind: "country" },
-  { id: "canada", name: "Canada", network: "4G / 5G", regions: "1 country", kind: "country" },
+  { id: "europe", name: "Europe", network: "4G / 5G", from: 5, kind: "region" },
+  { id: "france", name: "France", network: "4G / 5G", from: 5, kind: "country" },
+  { id: "global", name: "Global", network: "4G / 5G", from: 5, kind: "region" },
+  { id: "indonesia", name: "Indonesia", network: "4G / 5G", kind: "country" },
+  { id: "england", name: "England", network: "4G / 5G", kind: "country" },
+  { id: "united-states", name: "United States", network: "4G / 5G", kind: "country" },
+  { id: "colombia", name: "Colombia", network: "4G / 5G", kind: "country" },
+  { id: "australia", name: "Australia", network: "4G / 5G", kind: "country" },
+  { id: "canada", name: "Canada", network: "4G / 5G", kind: "country" },
 ];
 
 /** "4G / 5G · From €5.00 · 35 countries/regions" with the price in the selected currency. */
 export function destinationMeta(d: Destination, money: (eur: number, opts?: MoneyOptions) => string) {
-  return [d.network, d.from !== undefined ? `From ${money(d.from, { tight: true })}` : null, d.coverage]
+  return [
+    d.network,
+    d.from !== undefined ? `From ${money(d.from, { tight: true })}` : null,
+    d.kind === "region" ? coverageLabel(coverageFor(d)) : null,
+  ]
     .filter(Boolean)
     .join(" · ");
 }
@@ -53,11 +54,186 @@ export function findDestination(nameOrId: string): Destination {
       id: key,
       name: nameOrId,
       network: "4G / 5G",
-      regions: "1 country",
-      kind: "country",
+      kind: AREAS.some((a) => a.toLowerCase() === key) ? "region" : "country",
     }
   );
 }
+
+/* ---------- coverage (sample data: real country names, invented speeds and partner networks) ---------- */
+
+export const AREAS = ["Europe", "Asia", "Americas", "Middle East", "Africa", "Oceania"] as const;
+export type Area = (typeof AREAS)[number];
+export type CoverageCountry = { name: string; code: string; area: Area };
+
+const WORLD_BY_AREA: Record<Area, [string, string][]> = {
+  Europe: [
+    ["Albania", "AL"],
+    ["Austria", "AT"],
+    ["Belgium", "BE"],
+    ["Bosnia and Herzegovina", "BA"],
+    ["Bulgaria", "BG"],
+    ["Croatia", "HR"],
+    ["Cyprus", "CY"],
+    ["Czechia", "CZ"],
+    ["Denmark", "DK"],
+    ["Estonia", "EE"],
+    ["Finland", "FI"],
+    ["France", "FR"],
+    ["Germany", "DE"],
+    ["Greece", "GR"],
+    ["Hungary", "HU"],
+    ["Iceland", "IS"],
+    ["Ireland", "IE"],
+    ["Italy", "IT"],
+    ["Latvia", "LV"],
+    ["Liechtenstein", "LI"],
+    ["Lithuania", "LT"],
+    ["Luxembourg", "LU"],
+    ["Malta", "MT"],
+    ["Moldova", "MD"],
+    ["Monaco", "MC"],
+    ["Montenegro", "ME"],
+    ["Netherlands", "NL"],
+    ["North Macedonia", "MK"],
+    ["Norway", "NO"],
+    ["Poland", "PL"],
+    ["Portugal", "PT"],
+    ["Romania", "RO"],
+    ["Serbia", "RS"],
+    ["Slovakia", "SK"],
+    ["Slovenia", "SI"],
+    ["Spain", "ES"],
+    ["Sweden", "SE"],
+    ["Switzerland", "CH"],
+    ["Ukraine", "UA"],
+    ["United Kingdom", "GB"],
+  ],
+  Asia: [
+    ["Bangladesh", "BD"],
+    ["Brunei", "BN"],
+    ["Cambodia", "KH"],
+    ["China mainland", "CN"],
+    ["Hong Kong", "HK"],
+    ["India", "IN"],
+    ["Indonesia", "ID"],
+    ["Japan", "JP"],
+    ["Kazakhstan", "KZ"],
+    ["Kyrgyzstan", "KG"],
+    ["Laos", "LA"],
+    ["Macau", "MO"],
+    ["Malaysia", "MY"],
+    ["Maldives", "MV"],
+    ["Mongolia", "MN"],
+    ["Nepal", "NP"],
+    ["Pakistan", "PK"],
+    ["Philippines", "PH"],
+    ["Singapore", "SG"],
+    ["South Korea", "KR"],
+    ["Sri Lanka", "LK"],
+    ["Taiwan", "TW"],
+    ["Thailand", "TH"],
+    ["Uzbekistan", "UZ"],
+    ["Vietnam", "VN"],
+  ],
+  Americas: [
+    ["Argentina", "AR"],
+    ["Bolivia", "BO"],
+    ["Brazil", "BR"],
+    ["Canada", "CA"],
+    ["Chile", "CL"],
+    ["Colombia", "CO"],
+    ["Costa Rica", "CR"],
+    ["Dominican Republic", "DO"],
+    ["Ecuador", "EC"],
+    ["El Salvador", "SV"],
+    ["Guatemala", "GT"],
+    ["Honduras", "HN"],
+    ["Jamaica", "JM"],
+    ["Mexico", "MX"],
+    ["Panama", "PA"],
+    ["Paraguay", "PY"],
+    ["Peru", "PE"],
+    ["Puerto Rico", "PR"],
+    ["United States", "US"],
+    ["Uruguay", "UY"],
+  ],
+  "Middle East": [
+    ["Bahrain", "BH"],
+    ["Israel", "IL"],
+    ["Jordan", "JO"],
+    ["Kuwait", "KW"],
+    ["Oman", "OM"],
+    ["Qatar", "QA"],
+    ["Saudi Arabia", "SA"],
+    ["Türkiye", "TR"],
+    ["United Arab Emirates", "AE"],
+  ],
+  Africa: [
+    ["Egypt", "EG"],
+    ["Ghana", "GH"],
+    ["Kenya", "KE"],
+    ["Madagascar", "MG"],
+    ["Morocco", "MA"],
+    ["Nigeria", "NG"],
+    ["Rwanda", "RW"],
+    ["Senegal", "SN"],
+    ["South Africa", "ZA"],
+    ["Tanzania", "TZ"],
+    ["Tunisia", "TN"],
+    ["Uganda", "UG"],
+  ],
+  Oceania: [
+    ["Australia", "AU"],
+    ["Fiji", "FJ"],
+    ["Guam", "GU"],
+    ["New Zealand", "NZ"],
+    ["Papua New Guinea", "PG"],
+    ["Samoa", "WS"],
+  ],
+};
+
+const WORLD: CoverageCountry[] = AREAS.flatMap((area) =>
+  WORLD_BY_AREA[area].map(([name, code]) => ({ name, code, area })),
+);
+
+/** the Europe plan leaves out five networks of the full Europe list */
+const EUROPE_PLAN_EXCLUDES = ["Albania", "Bosnia and Herzegovina", "Moldova", "Montenegro", "North Macedonia"];
+
+const SINGLE_EXTRA: Record<string, CoverageCountry> = {
+  england: { name: "England", code: "GB-ENG", area: "Europe" },
+};
+
+/** Countries / regions a destination's plans work in, grouped by area and alphabetical within each. */
+export function coverageFor(d: Destination): CoverageCountry[] {
+  const id = d.id.toLowerCase();
+  if (id === "global") return WORLD;
+  if (id === "europe") return WORLD.filter((c) => c.area === "Europe" && !EUROPE_PLAN_EXCLUDES.includes(c.name));
+  const area = AREAS.find((a) => a.toLowerCase() === id);
+  if (area) return WORLD.filter((c) => c.area === area);
+  const one = SINGLE_EXTRA[id] ?? WORLD.find((c) => c.name.toLowerCase() === d.name.toLowerCase());
+  return [one ?? { name: d.name, code: "", area: "Europe" }];
+}
+
+export function coverageLabel(list: CoverageCountry[]) {
+  return list.length === 1 ? "1 country" : `${list.length} countries/regions`;
+}
+
+/** Flag emoji for an ISO 3166 code (regional indicators), or the England subdivision flag. */
+export function flagEmoji(code: string) {
+  if (code === "GB-ENG") return "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}";
+  if (!/^[A-Z]{2}$/.test(code)) return "";
+  return String.fromCodePoint(...[...code].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65));
+}
+
+/** Sample network notes per area for the "Available Region list" sheet (not real measurements). */
+export const AREA_NOTES: Record<Area, { network: string; speed: string; partners: number }> = {
+  Europe: { network: "4G / 5G", speed: "Up to 150 Mbps", partners: 3 },
+  Asia: { network: "4G / 5G", speed: "Up to 120 Mbps", partners: 2 },
+  Americas: { network: "4G / 5G", speed: "Up to 100 Mbps", partners: 2 },
+  "Middle East": { network: "4G", speed: "Up to 60 Mbps", partners: 2 },
+  Africa: { network: "4G", speed: "Up to 40 Mbps", partners: 1 },
+  Oceania: { network: "4G / 5G", speed: "Up to 100 Mbps", partners: 2 },
+};
 
 export type Plan = {
   id: string;

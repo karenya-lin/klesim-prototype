@@ -1,7 +1,7 @@
 "use client";
 
 import type { Ref } from "react";
-import { findDestination } from "../data";
+import { coverageFor, coverageLabel, findDestination } from "../data";
 import { selectionPrice, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { CartAdd } from "../ui/icons";
@@ -30,6 +30,7 @@ export function PlanTopBar() {
 export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
   const { state, actions } = useApp();
   const dest = findDestination(state.destination);
+  const coverage = coverageLabel(coverageFor(dest));
   return (
     <>
       <Hero src="/img/hero-balloons.webp" height="calc(var(--sb-h) + 190px)" shade="up" />
@@ -48,14 +49,25 @@ export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
             <Img src="/icons/caret-down-dark.svg" size={16} eager />
           </button>
           <div className={styles.regionInfo}>
-            <span className={styles.regionCount}>
-              {dest.regions}
+            <button
+              type="button"
+              className={styles.regionCount}
+              onClick={() => actions.openOverlay("coverage")}
+              aria-haspopup="dialog"
+              aria-label={`Coverage: ${coverage}. Show the list`}
+            >
+              {coverage}
               <Img src="/icons/caret-down-white.svg" size={16} eager />
-            </span>
-            <span className={styles.regionList}>
+            </button>
+            <button
+              type="button"
+              className={styles.regionList}
+              onClick={() => actions.openOverlay("regionInfo")}
+              aria-haspopup="dialog"
+            >
               <Img src="/icons/question-white.svg" width={13} height={15} eager />
               Available Region list
-            </span>
+            </button>
           </div>
         </div>
         <div className={styles.compat}>

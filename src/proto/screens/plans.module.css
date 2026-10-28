@@ -46,11 +46,13 @@
   box-shadow: 0 0 0 2px var(--c-focus-halo);
 }
 
+/* two stacked 44 px targets: they borrow the 14 px gaps above and below, so the row keeps its height */
 .regionInfo {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
+  margin: -14px 0;
   color: var(--c-on-dark);
   font-weight: 700;
 }
@@ -60,15 +62,25 @@
   align-items: center;
   gap: 8px;
   height: 44px;
+  padding-top: 24px;
+  font-weight: 700;
   font-size: 16px;
+  color: inherit;
 }
 
 .regionList {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 16px;
+  height: 44px;
+  font-weight: 700;
   font-size: 12px;
+  color: inherit;
+}
+
+.regionCount:hover,
+.regionList:hover {
+  text-decoration: underline;
 }
 
 .compat {

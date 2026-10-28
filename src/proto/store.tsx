@@ -26,7 +26,9 @@ export type OverlayId =
   | "payment"
   | "success"
   | "resendEmail"
-  | "currency";
+  | "currency"
+  | "coverage"
+  | "regionInfo";
 
 export type CartItem = {
   key: string;

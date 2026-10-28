@@ -1,7 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { CURRENCIES, DESTINATIONS, PLANS, SHEET_DESTINATIONS, destinationMeta, findDestination } from "../data";
+import { useId, useState } from "react";
+import {
+  AREAS,
+  AREA_NOTES,
+  CURRENCIES,
+  DESTINATIONS,
+  PLANS,
+  SHEET_DESTINATIONS,
+  coverageFor,
+  coverageLabel,
+  destinationMeta,
+  findDestination,
+  flagEmoji,
+} from "../data";
 import {
   PAYMENT_LABEL,
   SAMPLE_COUPONS,
@@ -25,9 +37,9 @@ const FLAGS: Record<string, string> = {
   spain: "/icons/flag-spain.svg",
 };
 
-function Globe() {
+function Globe({ size = 32 }: { size?: number }) {
   return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <circle cx="16" cy="16" r="15" style={{ fill: "var(--c-text-dark)" }} />
       <path
         d="M3 16h26M16 2c3.6 3.6 5.4 8.2 5.4 14S19.6 26.4 16 30c-3.6-3.6-5.4-8.2-5.4-14S12.4 5.6 16 2Z"
@@ -40,12 +52,38 @@ function Globe() {
 
 export function FlagChip({ name }: { name: string }) {
   const src = FLAGS[name.toLowerCase()];
+  const dest = findDestination(name);
+  const only = dest.kind === "country" ? coverageFor(dest)[0] : null;
+  const emoji = only ? flagEmoji(only.code) : "";
   return (
     <span className={styles.flagChip} aria-hidden="true">
-      {src ? <Img src={src} size={32} /> : <Globe />}
+      {src ? (
+        <Img src={src} size={32} />
+      ) : emoji ? (
+        <span className={cx(styles.flag, styles.flagBig)}>{emoji}</span>
+      ) : (
+        <Globe />
+      )}
     </span>
   );
 }
+
+/** Country flag (emoji drawn with the bundled flag font), or a globe when there is no code. */
+function Flag({ code }: { code: string }) {
+  const emoji = flagEmoji(code);
+  return (
+    <span className={styles.flag} aria-hidden="true">
+      {emoji || <Globe size={22} />}
+    </span>
+  );
+}
+
+const fold = (v: string) =>
+  v
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 
 /* ---------- Choose destination (84:13657) ---------- */
 
@@ -574,6 +612,165 @@ export function ResendEmailDialog() {
   );
 }
 
+/* ---------- Coverage list: "112 countries/regions" in the plans header (no Figma frame) ---------- */
+
+export function CoverageSheet() {
+  const { state } = useApp();
+  const dest = findDestination(state.destination);
+  const all = coverageFor(dest);
+  const label = coverageLabel(all);
+  const [query, setQuery] = useState("");
+  const baseId = useId();
+  const q = fold(query);
+  const matches = q ? all.filter((c) => fold(c.name).includes(q) || fold(c.area).includes(q)) : all;
+  const groups = AREAS.map((area) => ({
+    area,
+    list: matches.filter((c) => c.area === area).sort((a, b) => a.name.localeCompare(b.name)),
+  })).filter((g) => g.list.length > 0);
+  const areaCount = AREAS.filter((a) => all.some((c) => c.area === a)).length;
+
+  return (
+    <Sheet
+      title={`${dest.name} coverage`}
+      titleText="coverage list"
+      leading={<FlagChip name={dest.name} />}
+      subhead={
+        <label className={styles.searchField}>
+          <span className="sr-only">Search countries and regions</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search country or region"
+            autoComplete="off"
+            enterKeyHint="search"
+            aria-describedby={`${baseId}-count`}
+          />
+          {query ? (
+            <button type="button" className={styles.searchClear} aria-label="Clear search" onClick={() => setQuery("")}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+          ) : (
+            <span className={styles.searchIcon} aria-hidden="true">
+              <Img src="/icons/search-dark.svg" size={24} />
+            </span>
+          )}
+        </label>
+      }
+    >
+      <p id={`${baseId}-count`} className={styles.coverageCount} aria-live="polite">
+        {q
+          ? `${matches.length} of ${label} ${matches.length === 1 ? "matches" : "match"} “${query.trim()}”`
+          : areaCount > 1
+            ? `${label} in ${areaCount} areas`
+            : label}
+      </p>
+      {groups.length ? (
+        groups.map((g) => (
+          <section key={g.area} className={styles.coverageGroup} aria-labelledby={`${baseId}-${g.area}`}>
+            <div className={styles.coverageGroupHead}>
+              <h3 id={`${baseId}-${g.area}`} className={styles.coverageArea}>
+                {g.area}
+              </h3>
+              <span className={ui.tag}>{g.list.length}</span>
+            </div>
+            <ul className={styles.coverageList}>
+              {g.list.map((c) => (
+                <li key={c.code || c.name} className={styles.coverageRow}>
+                  <Flag code={c.code} />
+                  <span>{c.name}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      ) : (
+        <div className={styles.coverageEmpty}>
+          <span className={styles.coverageEmptyIcon}>
+            <Globe size={40} />
+          </span>
+          <strong>No country or region matches “{query.trim()}”</strong>
+          <span>This plan may not work there. Check the spelling, or contact support before you buy.</span>
+          <button type="button" className={cx(ui.btn, ui.btnOutline)} onClick={() => setQuery("")}>
+            Clear search
+          </button>
+        </div>
+      )}
+    </Sheet>
+  );
+}
+
+/* ---------- Available Region list: what "available" means for this plan (no Figma frame) ---------- */
+
+const PARTNER_LETTERS = ["A", "B", "C"];
+
+export function RegionInfoSheet() {
+  const { state, actions } = useApp();
+  const dest = findDestination(state.destination);
+  const all = coverageFor(dest);
+  const label = coverageLabel(all);
+  const areas = AREAS.filter((a) => all.some((c) => c.area === a));
+  const single = all.length === 1 ? all[0] : null;
+
+  return (
+    <Sheet
+      title="Available regions"
+      titleText="available regions"
+      leading={<FlagChip name={dest.name} />}
+      footer={
+        <button
+          type="button"
+          className={cx(ui.btn, ui.btnPrimary, ui.btnBlock)}
+          onClick={() => actions.closeOverlay(() => actions.openOverlay("coverage"))}
+        >
+          {single ? `See ${single.name} coverage` : `See all ${label}`}
+        </button>
+      }
+    >
+      <div className={cx(styles.infoItem, styles.introCard)}>
+        <span className={styles.infoText}>
+          <strong>Where your {dest.name} plan works</strong>
+          <span>
+            Available means this eSIM can connect to a partner network in {single ? single.name : label} and use your
+            data allowance there. The plan starts on its first connection in a covered country.
+          </span>
+        </span>
+      </div>
+      <div className={styles.areaList}>
+        {areas.map((area) => {
+          const n = all.filter((c) => c.area === area).length;
+          const note = AREA_NOTES[area];
+          return (
+            <section key={area} className={styles.areaCard} aria-label={area}>
+              <div className={styles.areaHead}>
+                <strong>{area}</strong>
+                <span>{single ? single.name : n === 1 ? "1 country" : `${n} countries/regions`}</span>
+              </div>
+              <div className={styles.areaTags}>
+                <span className={ui.tag}>{note.network}</span>
+                <span className={ui.tag}>{note.speed}</span>
+              </div>
+              <span className={styles.areaPartners}>
+                {note.partners === 1 ? "Partner network A" : `Partner networks ${PARTNER_LETTERS.slice(0, note.partners).join(", ")}`}
+              </span>
+            </section>
+          );
+        })}
+      </div>
+      <div className={styles.noteCard}>
+        <strong>Coverage can vary</strong>
+        <ul>
+          <li>Speeds are sample figures for this prototype. Real speeds depend on the local network, your device and how busy it is.</li>
+          <li>Remote areas, islands, ships and flights can be out of range even inside a covered country.</li>
+          <li>Partner networks can change. If a place matters for your trip, ask support before you buy.</li>
+        </ul>
+      </div>
+    </Sheet>
+  );
+}
+
 /* ---------- Currency (no Figma frame: built from the payment sheet pattern) ---------- */
 
 export function CurrencySheet() {
@@ -644,6 +841,10 @@ export function OverlayHost() {
       return <ResendEmailDialog />;
     case "currency":
       return <CurrencySheet />;
+    case "coverage":
+      return <CoverageSheet />;
+    case "regionInfo":
+      return <RegionInfoSheet />;
     default:
       return null;
   }

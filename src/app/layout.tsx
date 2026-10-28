@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Ubuntu } from "next/font/google";
+import { Noto_Color_Emoji, Ubuntu } from "next/font/google";
 import "./globals.css";
 
 const ubuntu = Ubuntu({
@@ -7,6 +7,15 @@ const ubuntu = Ubuntu({
   weight: ["400", "500", "700"],
   variable: "--font-ubuntu",
   display: "swap",
+});
+
+/* flags in the coverage list; only the glyphs a page uses are downloaded (unicode-range subsets) */
+const flags = Noto_Color_Emoji({
+  subsets: ["emoji"],
+  weight: "400",
+  variable: "--font-flags",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -25,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={ubuntu.variable}>
+    <html lang="en" className={`${ubuntu.variable} ${flags.variable}`}>
       <body>{children}</body>
     </html>
   );
