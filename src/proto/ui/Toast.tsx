@@ -26,13 +26,25 @@ export function Toast() {
 
   return (
     <div className={styles.toastWrap} role="status" aria-live="polite">
-      {toast ? (
-        <div key={toast.id} className={cx(styles.toast, toast.kind === "cart" && styles.toastCollapsing)}>
+      {toast?.kind === "cart" ? (
+        <div key={toast.id} className={styles.toastCartWrap}>
+          <div className={cx(styles.toast, styles.toastCart)}>
+            <div className={styles.toastText}>
+              <span className={styles.toastTitle}>{toast.title}</span>
+              {toast.text ? <span className={styles.toastSub}>{toast.text}</span> : null}
+            </div>
+            <span className={styles.toastCartIcon}>
+              <CartAdd />
+            </span>
+          </div>
+        </div>
+      ) : toast ? (
+        <div key={toast.id} className={styles.toast}>
           <div className={styles.toastText}>
             <span className={styles.toastTitle}>{toast.title}</span>
             {toast.text ? <span className={styles.toastSub}>{toast.text}</span> : null}
           </div>
-          {toast.kind === "cart" ? <CartAdd /> : <Check />}
+          <Check />
         </div>
       ) : null}
     </div>
