@@ -61,7 +61,7 @@
   transition: transform 150ms ease;
 }
 
-button.card:hover {
+button.card:hover:not(:active) {
   transform: translateY(-1px);
 }
 
@@ -256,9 +256,6 @@ button.card:hover {
   transition: transform 120ms ease;
 }
 
-.tile:active {
-  transform: scale(0.98);
-}
 
 .tile:focus-visible {
   border-radius: 12px;

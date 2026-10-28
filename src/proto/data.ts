@@ -1,16 +1,35 @@
-export type Place = { name: string; image: string; imageStyle?: "wide" | "tall" };
+/** A destination chip: a round photo when one exists, otherwise the flag (countries) or a globe (areas). */
+export type Place = { name: string; image?: string; imageStyle?: "wide" | "tall"; symbol?: string };
 
-export const PLACE_ROWS: Place[][] = [
-  [
-    { name: "Australia", image: "/img/place-australia.webp", imageStyle: "wide" },
-    { name: "Colombia", image: "/img/place-colombia.webp", imageStyle: "tall" },
-    { name: "Indonesia", image: "/img/place-indonesia.webp" },
-  ],
-  [
-    { name: "Indonesia", image: "/img/place-indonesia.webp" },
-    { name: "Canada", image: "/img/place-canada.webp" },
-    { name: "France", image: "/img/place-france.webp" },
-  ],
+/** Home / search country strip, listed column by column (two rows): the photo chips come first. */
+export const COUNTRY_PLACES: Place[] = [
+  { name: "Australia", image: "/img/place-australia.webp", imageStyle: "wide" },
+  { name: "Canada", image: "/img/place-canada.webp" },
+  { name: "Colombia", image: "/img/place-colombia.webp", imageStyle: "tall" },
+  { name: "France", image: "/img/place-france.webp" },
+  { name: "Indonesia", image: "/img/place-indonesia.webp" },
+  { name: "Japan" },
+  { name: "United States" },
+  { name: "Thailand" },
+  { name: "Italy" },
+  { name: "South Korea" },
+  { name: "Spain" },
+  { name: "Mexico" },
+  { name: "Türkiye" },
+  { name: "Singapore" },
+  { name: "Brazil" },
+  { name: "Vietnam" },
+];
+
+/** Regional package strip (column by column, two rows). */
+export const REGION_PLACES: Place[] = [
+  { name: "Global", symbol: "\u{1F310}" },
+  { name: "Europe", image: "/img/place-france.webp" },
+  { name: "Asia", image: "/img/place-indonesia.webp" },
+  { name: "Americas", image: "/img/place-colombia.webp", imageStyle: "tall" },
+  { name: "Oceania", image: "/img/place-australia.webp", imageStyle: "wide" },
+  { name: "Middle East", symbol: "\u{1F30D}" },
+  { name: "Africa", symbol: "\u{1F30D}" },
 ];
 
 export type Destination = {
@@ -212,6 +231,11 @@ export function coverageFor(d: Destination): CoverageCountry[] {
   if (area) return WORLD.filter((c) => c.area === area);
   const one = SINGLE_EXTRA[id] ?? WORLD.find((c) => c.name.toLowerCase() === d.name.toLowerCase());
   return [one ?? { name: d.name, code: "", area: "Europe" }];
+}
+
+/** ISO code of a covered country by name, for flag fallbacks ("" when unknown). */
+export function countryCode(name: string) {
+  return WORLD.find((c) => c.name.toLowerCase() === name.toLowerCase())?.code ?? "";
 }
 
 export function coverageLabel(list: CoverageCountry[]) {

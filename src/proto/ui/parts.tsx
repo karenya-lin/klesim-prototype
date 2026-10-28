@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { FAQS, GUIDE_LINKS, currencyOf } from "../data";
-import { useApp, type RouteId } from "../store";
+import { useApp, type OverlayId, type RouteId } from "../store";
 import { Img } from "./Img";
 import { ChatSupport, ChevronLeft, NavAccount, NavHome, NavSim, XMark } from "./icons";
 import styles from "./ui.module.css";
@@ -53,19 +53,27 @@ export function CartButton({ soft, badge = true }: { soft?: boolean; badge?: boo
   );
 }
 
+/** True while the given sheet is open (false as soon as it starts closing), for caret triggers. */
+export function useSheetOpen(id: OverlayId) {
+  const { state } = useApp();
+  return state.overlay?.id === id && !state.overlay.closing;
+}
+
 export function CurrencyButton({ soft }: { soft?: boolean }) {
   const { state, actions } = useApp();
   const cur = currencyOf(state.currency);
+  const open = useSheetOpen("currency");
   return (
     <button
       type="button"
       className={cx(styles.roundBtn, soft && styles.roundBtnSoft)}
       aria-label={`Currency: ${cur.name} (${cur.code}). Change currency`}
       aria-haspopup="dialog"
+      aria-expanded={open}
       onClick={() => actions.openOverlay("currency")}
     >
       <span aria-hidden="true">{cur.symbol}</span>
-      <Img src="/icons/caret-down-white.svg" size={16} eager />
+      <Img src="/icons/caret-down-white.svg" size={16} eager className={cx(styles.caret, open && styles.caretUp)} />
     </button>
   );
 }

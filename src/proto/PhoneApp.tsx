@@ -83,6 +83,13 @@ function Navigator() {
 }
 
 export function PhoneApp() {
+  // iOS Safari only shows :active (the pressed state) once a touchstart listener exists on the page
+  useEffect(() => {
+    const noop = () => {};
+    document.addEventListener("touchstart", noop, { passive: true });
+    return () => document.removeEventListener("touchstart", noop);
+  }, []);
+
   return (
     <AppProvider>
       <div className={styles.app}>

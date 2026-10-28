@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PLACE_ROWS, WHY_US } from "../data";
+import { COUNTRY_PLACES, REGION_PLACES, WHY_US } from "../data";
 import { useApp, useMoney } from "../store";
 import { BrandWordmark } from "../ui/Brand";
 import { Img } from "../ui/Img";
@@ -20,6 +20,7 @@ import {
   useCollapse,
 } from "../ui/parts";
 import styles from "./home.module.css";
+import { PlaceStrip } from "./PlaceStrip";
 
 export function HomeScreen() {
   const { actions } = useApp();
@@ -78,7 +79,7 @@ export function HomeScreen() {
           </section>
 
           <div className={styles.places}>
-            <div className={styles.placesInner}>
+            <div className={styles.placesHead}>
               <div className={styles.tabs} role="tablist" aria-label="Destination type">
                 <button
                   type="button"
@@ -98,50 +99,22 @@ export function HomeScreen() {
                 >
                   Regional Package
                 </button>
-                <button
-                  type="button"
-                  className={styles.storeBtn}
-                  aria-label="Browse all plans"
-                  onClick={() => actions.navigate("plans", "fade")}
-                >
-                  <Img src="/icons/storefront.svg" size={24} />
-                </button>
               </div>
-              <div className={styles.chipRows}>
-                {(tab === "country"
-                  ? PLACE_ROWS
-                  : [
-                      [PLACE_ROWS[0][2], PLACE_ROWS[1][2]],
-                      [PLACE_ROWS[0][0], PLACE_ROWS[0][1]],
-                    ]
-                ).map((row, r) => (
-                  <div className={styles.chipRow} key={r}>
-                    {row.map((p, i) => {
-                      const label = tab === "country" ? p.name : ["Asia", "Europe", "Oceania", "Americas"][r * 2 + i];
-                      return (
-                        <button
-                          type="button"
-                          key={`${label}-${i}`}
-                          className={styles.chip}
-                          onClick={() => openPlans(label)}
-                        >
-                          <span
-                            className={cx(
-                              styles.chipImg,
-                              p.imageStyle === "wide" && styles.chipImgWide,
-                              p.imageStyle === "tall" && styles.chipImgTall,
-                            )}
-                          >
-                            <Img src={p.image} alt="" eager />
-                          </span>
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
+              <button
+                type="button"
+                className={styles.storeBtn}
+                aria-label="Browse all plans"
+                onClick={() => actions.navigate("plans", "fade")}
+              >
+                <Img src="/icons/storefront.svg" size={24} />
+              </button>
             </div>
+            <PlaceStrip
+              key={tab}
+              places={tab === "country" ? COUNTRY_PLACES : REGION_PLACES}
+              label={tab === "country" ? "Countries" : "Regional packages"}
+              onPick={openPlans}
+            />
           </div>
 
           <div className={styles.main}>
@@ -179,13 +152,8 @@ export function HomeScreen() {
                 <h2 id="why-h" className={ui.h20}>
                   Why choose us
                 </h2>
-                <button
-                  type="button"
-                  className={styles.buyBtn}
-                  aria-label="Let’s buy"
-                  title="Let’s buy"
-                  onClick={() => openPlans("Global")}
-                >
+                <button type="button" className={cx(ui.linkSf, styles.buyLink)} onClick={() => openPlans("Global")}>
+                  Let’s buy
                   <CartAdd />
                 </button>
               </div>

@@ -26,6 +26,8 @@
 }
 
 .promoOffers {
+  --press-ink: var(--press-ink-on-dark);
+  border-radius: var(--r-8);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -130,22 +132,73 @@
 
 /* ---------- popular places ---------- */
 .places {
-  margin-top: 24px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-}
-
-.places::-webkit-scrollbar {
-  display: none;
-}
-
-.placesInner {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 24px;
+}
+
+.placesHead {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+/* ---------- destination strip: two rows that scroll sideways together ---------- */
+.strip {
+  position: relative;
+}
+
+/* soft fade on the trailing edge; it goes away once the last chip is in view */
+.strip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, rgb(242 242 243 / 0), var(--c-bg));
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.stripAtEnd::after {
+  opacity: 0;
+}
+
+.stripScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.stripScroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* a drag is not a press */
+.stripDragging .chip:active {
+  background-image: none;
+  transform: none;
+}
+
+.stripDragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.stripGrid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-columns: max-content;
+  gap: 16px 8px;
   width: max-content;
-  min-width: 100%;
   padding: 0 16px;
 }
 
@@ -156,6 +209,7 @@
 }
 
 .tab {
+  border-radius: var(--r-8);
   position: relative;
   height: 44px;
   padding: 12px 24px;
@@ -200,38 +254,19 @@
 }
 
 /* "Let’s buy" as an icon: shopping bag with a plus, 44px hit area, glyph edge on the text edge */
-.buyBtn {
-  width: 44px;
-  height: 44px;
-  margin-right: -13px;
-  border-radius: var(--r-pill);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--c-text-dark);
-  transition: background-color 150ms ease;
+/* "Let's buy": text + bag icon, same family as "See more"; the bag's 4.5 px inner margin is pulled
+   out so the glyph lines up with the text edge of the actions above and below */
+.buyLink {
+  margin-right: -4.5px;
 }
 
-.buyBtn:hover {
-  background: var(--c-hover);
-}
-
-.buyBtn:focus-visible {
-  border-radius: var(--r-pill);
-}
-
-.chipRows {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.chipRow {
-  display: flex;
-  gap: 8px;
+.buyLink svg {
+  flex: none;
 }
 
 .chip {
+  --press-scale: 0.97;
+  scroll-snap-align: start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -280,6 +315,16 @@
   width: 170.5px;
   left: -63px;
   object-fit: fill;
+}
+
+.chipImgSymbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-g3);
+  font-family: var(--font-flags), "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: 30px;
+  line-height: 1;
 }
 
 .chipImgTall img {

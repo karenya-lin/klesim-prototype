@@ -94,6 +94,8 @@
 }
 
 .cardHead {
+  --press-scale: 1;
+  border-radius: var(--r-8);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -309,6 +311,22 @@
   cursor: pointer;
 }
 
+.checkbox:has(input:active) {
+  transform: scale(0.92);
+  filter: brightness(0.92);
+  transition: transform 100ms ease, filter 100ms ease;
+}
+
+.checkbox {
+  transition: transform 150ms ease, filter 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkbox:has(input:active) {
+    transform: none;
+  }
+}
+
 .checkbox:focus-within {
   outline: 3px solid var(--c-focus);
   outline-offset: 2px;
@@ -402,6 +420,8 @@
 }
 
 .amountBtn {
+  --press-scale: 1;
+  border-radius: var(--r-8);
   flex: 1 1 0;
   min-width: 0;
   display: flex;

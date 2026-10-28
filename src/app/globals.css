@@ -164,6 +164,47 @@ ol {
   border: 0;
 }
 
+/* ---------- pressed state ----------
+   Every control gets one treatment per family. The defaults below cover light surfaces (an ink
+   overlay drawn as a background image, so it works on any fill and radius) plus a small scale;
+   families tune it with two variables in their own modules:
+     --press-ink    the overlay colour (transparent where a pressed token replaces the fill)
+     --press-scale  1 for rows, tabs, accordion headers and nav items
+   ~100 ms in, ~150 ms out; under reduced motion only the colour changes. */
+:root {
+  --press-ink: rgb(var(--c-overlay-rgb) / 0.1);
+  --press-ink-on-dark: rgb(255 255 255 / 0.18);
+}
+
+button:not(:disabled),
+[role="button"],
+a[href] {
+  transition-property: background-color, border-color, box-shadow, color, filter, transform;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+button:not(:disabled):active,
+[role="button"]:active,
+a[href]:active {
+  background-image: linear-gradient(var(--press-ink), var(--press-ink));
+  transform: scale(var(--press-scale, 0.98));
+  transition-duration: 100ms;
+}
+
+[role="tab"],
+[role="tablist"] button {
+  --press-scale: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active,
+  [role="button"]:active,
+  a[href]:active {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

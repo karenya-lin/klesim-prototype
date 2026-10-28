@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { DESTINATIONS, PLACE_ROWS } from "../data";
+import { COUNTRY_PLACES, DESTINATIONS } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { BackButton, BarSearchButton, BottomNav, CartButton, CurrencyButton, Hero, TopBar, cx, ui, useCollapse } from "../ui/parts";
 import home from "./home.module.css";
 import styles from "./search.module.css";
+import { PlaceStrip } from "./PlaceStrip";
 
 const DEFAULT_RESULTS = ["canada", "colombia"];
 
@@ -93,30 +94,7 @@ export function SearchScreen() {
             <h2 id="current-h" className={cx(ui.h20, styles.padX)}>
               Current view
             </h2>
-            <div className={home.places} style={{ marginTop: 0 }}>
-              <div className={home.placesInner}>
-                <div className={home.chipRows}>
-                  {PLACE_ROWS.map((row, r) => (
-                    <div className={home.chipRow} key={r}>
-                      {row.map((p, i) => (
-                        <button type="button" key={`${p.name}-${i}`} className={home.chip} onClick={() => open(p.name)}>
-                          <span
-                            className={cx(
-                              home.chipImg,
-                              p.imageStyle === "wide" && home.chipImgWide,
-                              p.imageStyle === "tall" && home.chipImgTall,
-                            )}
-                          >
-                            <Img src={p.image} eager />
-                          </span>
-                          {p.name}
-                        </button>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <PlaceStrip places={COUNTRY_PLACES} label="Countries" onPick={open} />
             <ul className={cx(styles.cards, styles.padX)} aria-live="polite">
               {results.length === 0 ? (
                 <li className={styles.empty}>No destinations match “{query}”.</li>

@@ -5,7 +5,7 @@ import { coverageFor, coverageLabel, findDestination } from "../data";
 import { selectionPrice, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { CartAdd } from "../ui/icons";
-import { BackButton, CartButton, CurrencyButton, Hero, ShareButton, Stepper, TopBar, cx, ui } from "../ui/parts";
+import { BackButton, CartButton, CurrencyButton, Hero, ShareButton, Stepper, TopBar, cx, ui, useSheetOpen } from "../ui/parts";
 import styles from "./plans.module.css";
 
 export function PlanTopBar() {
@@ -31,6 +31,8 @@ export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
   const { state, actions } = useApp();
   const dest = findDestination(state.destination);
   const coverage = coverageLabel(coverageFor(dest));
+  const destOpen = useSheetOpen("destination");
+  const coverageOpen = useSheetOpen("coverage");
   return (
     <>
       <Hero src="/img/hero-balloons.webp" height="calc(var(--sb-h) + 190px)" shade="up" />
@@ -43,10 +45,11 @@ export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
             className={styles.regionBtn}
             onClick={() => actions.openOverlay("destination")}
             aria-haspopup="dialog"
+            aria-expanded={destOpen}
             aria-label={`Destination: ${dest.name}. Change destination`}
           >
             <span>{dest.name}</span>
-            <Img src="/icons/caret-down-dark.svg" size={16} eager />
+            <Img src="/icons/caret-down-dark.svg" size={16} eager className={cx(ui.caret, destOpen && ui.caretUp)} />
           </button>
           <div className={styles.regionInfo}>
             <button
@@ -54,10 +57,11 @@ export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
               className={styles.regionCount}
               onClick={() => actions.openOverlay("coverage")}
               aria-haspopup="dialog"
+              aria-expanded={coverageOpen}
               aria-label={`Coverage: ${coverage}. Show the list`}
             >
               {coverage}
-              <Img src="/icons/caret-down-white.svg" size={16} eager />
+              <Img src="/icons/caret-down-white.svg" size={16} eager className={cx(ui.caret, coverageOpen && ui.caretUp)} />
             </button>
             <button
               type="button"

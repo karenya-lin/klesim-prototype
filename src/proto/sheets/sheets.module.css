@@ -378,7 +378,7 @@
   text-align: left;
 }
 
-button.infoItem:hover {
+button.infoItem:hover:not(:active) {
   background: var(--c-surface-light);
 }
 
