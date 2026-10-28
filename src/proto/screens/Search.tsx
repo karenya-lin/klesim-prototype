@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { DESTINATIONS, PLACE_ROWS } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { BackButton, BottomNav, CartButton, CurrencyButton, Hero, cx, ui } from "../ui/parts";
+import { BackButton, BarSearchButton, BottomNav, CartButton, CurrencyButton, Hero, TopBar, cx, ui, useCollapse } from "../ui/parts";
 import home from "./home.module.css";
 import styles from "./search.module.css";
 
@@ -14,6 +14,8 @@ export function SearchScreen() {
   const { actions } = useApp();
   const money = useMoney();
   const [query, setQuery] = useState("");
+  const { screenRef, scrollRef, headerRef, collapsed } = useCollapse();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -27,20 +29,32 @@ export function SearchScreen() {
   };
 
   return (
-    <div className={ui.screen}>
-      <div className={ui.scroll}>
+    <div className={ui.screen} ref={screenRef}>
+      <h1 className="sr-only">Find destination</h1>
+      <TopBar
+        leading={<BackButton ghost />}
+        title="Find destination"
+        actions={
+          <>
+            <BarSearchButton
+              soft
+              shown={collapsed}
+              onClick={() => {
+                scrollRef.current?.scrollTo({ top: 0 });
+                inputRef.current?.focus({ preventScroll: true });
+              }}
+            />
+            <CartButton soft badge={false} />
+            <CurrencyButton soft />
+          </>
+        }
+      />
+      <div className={ui.scroll} ref={scrollRef}>
         <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 165px)" shade="down" rounded />
         <div className={home.page}>
-          <h1 className="sr-only">Find destination</h1>
-          <div className={home.topRow}>
-            <BackButton ghost />
-            <div className={ui.headerGroup}>
-              <CartButton soft badge={false} />
-              <CurrencyButton soft />
-            </div>
-          </div>
+          <div className={ui.headerRowSpace} />
 
-          <section className={cx(home.promo, styles.promo)} aria-label="Search destinations">
+          <section className={cx(home.promo, styles.promo, ui.collapseFade)} aria-label="Search destinations" ref={headerRef}>
             <div className={home.promoHead}>
               <span>eSIM starting from {money(5.59, { tight: true })}!</span>
             </div>
@@ -55,6 +69,7 @@ export function SearchScreen() {
               <label className={styles.inputPill}>
                 <span className="sr-only">Find destination</span>
                 <input
+                  ref={inputRef}
                   className={styles.input}
                   type="search"
                   value={query}

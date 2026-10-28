@@ -1,27 +1,40 @@
 "use client";
 
+import type { Ref } from "react";
 import { findDestination } from "../data";
 import { selectionPrice, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { CartAdd } from "../ui/icons";
-import { BackButton, CartButton, CurrencyButton, Hero, ShareButton, Stepper, cx, ui } from "../ui/parts";
+import { BackButton, CartButton, CurrencyButton, Hero, ShareButton, Stepper, TopBar, cx, ui } from "../ui/parts";
 import styles from "./plans.module.css";
 
-export function PlanHeader() {
+export function PlanTopBar() {
+  const { state } = useApp();
+  const dest = findDestination(state.destination);
+  return (
+    <TopBar
+      leading={<BackButton />}
+      title={dest.name}
+      actions={
+        <>
+          <ShareButton />
+          <CartButton />
+          <CurrencyButton />
+        </>
+      }
+    />
+  );
+}
+
+/** Large plans header (photo, destination pill, compatibility); scrolls under the pinned PlanTopBar. */
+export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
   const { state, actions } = useApp();
   const dest = findDestination(state.destination);
   return (
     <>
       <Hero src="/img/hero-balloons.webp" height="calc(var(--sb-h) + 190px)" shade="up" />
-      <header className={styles.header}>
-        <div className={ui.headerRow}>
-          <BackButton />
-          <div className={ui.headerGroup}>
-            <ShareButton />
-            <CartButton />
-            <CurrencyButton />
-          </div>
-        </div>
+      <header className={cx(styles.header, ui.collapseFade)} ref={headerRef}>
+        <div className={ui.headerRowSpace} />
         <div className={styles.regionRow}>
           <h1 className="sr-only">{dest.name} eSIM plans</h1>
           <button

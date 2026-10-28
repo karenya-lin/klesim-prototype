@@ -3,8 +3,8 @@
 import { PLANS, type Plan } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { Radio, cx, ui } from "../ui/parts";
-import { CouponRibbon, PlanBottomBar, PlanHeader } from "./PlanParts";
+import { Radio, cx, ui, useCollapse } from "../ui/parts";
+import { CouponRibbon, PlanBottomBar, PlanHero, PlanTopBar } from "./PlanParts";
 import styles from "./plans.module.css";
 
 function PlanCard({ plan }: { plan: Plan }) {
@@ -78,11 +78,13 @@ export function PlansScreen() {
   const daily = PLANS.filter((p) => p.kind === "daily");
   const total = PLANS.filter((p) => p.kind === "total");
   const selected = PLANS.find((p) => p.id === state.planId);
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   return (
-    <div className={ui.screen}>
-      <PlanHeader />
-      <div className={ui.scroll}>
+    <div className={ui.screen} ref={screenRef}>
+      <PlanTopBar />
+      <div className={ui.scroll} ref={scrollRef}>
+        <PlanHero headerRef={headerRef} />
         <div className={styles.list} role="radiogroup" aria-label="Choose a plan">
           <section className={styles.group} aria-labelledby="daily-h">
             <div className={styles.groupHead}>

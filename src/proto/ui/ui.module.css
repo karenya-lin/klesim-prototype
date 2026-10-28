@@ -113,14 +113,78 @@
   border-radius: 0 0 var(--r-20) var(--r-20);
 }
 
-/* ---------- header controls ---------- */
-.headerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+/* ---------- collapsing top bar ----------
+   --k (0..1) is written on the screen root by useCollapse; everything here moves with transform / opacity. */
+.topBar {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--sb-h) + 56px);
+  padding: calc(var(--sb-h) + 1px) 16px 0;
+  pointer-events: none;
 }
 
+/* solid graphite strip behind the collapsed bar, so white text and icons stay well above 4.5:1 */
+.topBarBg {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--c-overlay-rgb));
+  box-shadow: 0 6px 18px rgb(var(--c-overlay-rgb) / 0.18);
+  opacity: calc(var(--k, 0) * 2);
+}
+
+.topBarRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  transform: translateY(calc(var(--k, 0) * 5px));
+}
+
+.topBarRow > * {
+  pointer-events: auto;
+}
+
+.topBarTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 22px;
+  color: var(--c-on-dark);
+  opacity: calc(var(--k, 0) * 1.6 - 0.6);
+  transform: translateY(calc((1 - var(--k, 0)) * 10px));
+  pointer-events: none;
+}
+
+.topBarActions {
+  flex: none;
+  margin-left: auto;
+}
+
+.topBarReveal {
+  opacity: calc(var(--k, 0) * 1.6 - 0.6);
+}
+
+/* the large header's own first row: kept as space, its controls live in the pinned bar */
+.headerRowSpace {
+  flex: none;
+  height: 44px;
+}
+
+/* large header content fades as it slides under the bar */
+.collapseFade {
+  opacity: calc(1 - var(--k, 0) * 2);
+}
+
+/* ---------- header controls ---------- */
 .headerGroup {
   display: flex;
   align-items: center;

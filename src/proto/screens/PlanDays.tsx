@@ -3,18 +3,20 @@
 import { DAY_OPTIONS } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { cx, ui } from "../ui/parts";
-import { PlanBottomBar, PlanHeader } from "./PlanParts";
+import { cx, ui, useCollapse } from "../ui/parts";
+import { PlanBottomBar, PlanHero, PlanTopBar } from "./PlanParts";
 import styles from "./plans.module.css";
 
 export function PlanDaysScreen() {
   const { state, actions } = useApp();
   const money = useMoney();
+  const { screenRef, scrollRef, headerRef } = useCollapse();
   return (
-    <div className={ui.screen}>
-      <PlanHeader />
-      <div className={cx(ui.scroll, styles.panel)}>
-        <div className={styles.panelInner}>
+    <div className={ui.screen} ref={screenRef}>
+      <PlanTopBar />
+      <div className={ui.scroll} ref={scrollRef}>
+        <PlanHero headerRef={headerRef} />
+        <div className={cx(styles.panel, styles.panelInner)}>
           <div className={styles.dayPlan}>
             <div className={styles.dayHead}>
               <Img src="/icons/esim-card.svg" width={60} height={40} />

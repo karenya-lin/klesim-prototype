@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useApp } from "../store";
 import { BrandWordmark } from "../ui/Brand";
 import { Img } from "../ui/Img";
-import { BottomNav, CartButton, CurrencyButton, Hero, cx, ui } from "../ui/parts";
+import { BottomNav, CartButton, CurrencyButton, Hero, TopBar, cx, ui, useCollapse } from "../ui/parts";
 import home from "./home.module.css";
 import styles from "./esim.module.css";
 
@@ -111,7 +111,7 @@ export function EsimCard({ data, flat, onOpen }: { data: EsimCardData; flat?: bo
 export function MyEsimScreen() {
   const { state, actions } = useApp();
   const [tab, setTab] = useState<"country" | "regional">("country");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { screenRef, scrollRef, headerRef } = useCollapse();
   const cards: EsimCardData[] = state.purchased
     ? [
         {
@@ -129,19 +129,23 @@ export function MyEsimScreen() {
   const shown = tab === "country" ? cards : cards.slice(0, 1);
 
   return (
-    <div className={ui.screen}>
-      <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
-      <header className={styles.header}>
-        <div className={ui.headerRow}>
-          <BrandWordmark />
-          <div className={ui.headerGroup}>
+    <div className={ui.screen} ref={screenRef}>
+      <TopBar
+        leading={<BrandWordmark />}
+        title="My eSIM"
+        actions={
+          <>
             <CartButton soft badge={false} />
             <CurrencyButton soft />
-          </div>
-        </div>
-        <h1 className={styles.title}>My eSIM</h1>
-      </header>
+          </>
+        }
+      />
       <div className={ui.scroll} ref={scrollRef}>
+        <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
+        <header className={cx(styles.header, ui.collapseFade)} ref={headerRef}>
+          <div className={ui.headerRowSpace} />
+          <h1 className={styles.title}>My eSIM</h1>
+        </header>
         <div className={styles.listWrap}>
           <div className={styles.tabsRow} style={{ width: "100%" }}>
             <div className={home.tabs} role="tablist" aria-label="eSIM type">

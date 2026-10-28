@@ -5,15 +5,6 @@
   padding-top: calc(var(--sb-h) + 1px);
 }
 
-.topRow {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-}
-
 /* ---------- promo (dark) ---------- */
 .promo {
   position: relative;

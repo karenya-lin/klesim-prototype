@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { FAQS, GUIDE_LINKS, currencyOf } from "../data";
 import { useApp, type RouteId } from "../store";
 import { Img } from "./Img";
@@ -101,6 +101,111 @@ export function Hero({
     >
       <Img src={src} className={styles.heroImg} style={position ? { objectPosition: position } : undefined} eager />
     </div>
+  );
+}
+
+/* ---------- collapsing top bar ---------- */
+
+/**
+ * Scroll-linked header collapse. Writes `--k` (0 expanded, 1 collapsed) on the screen root from the
+ * screen's own scroll container, so the bar animates with transform / opacity and never re-renders per frame.
+ * The large header scrolls with the content; `headerRef` marks where it ends.
+ * Reduced motion: the bar switches between the two states instead of following the scroll.
+ */
+export function useCollapse() {
+  const screenRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const screen = screenRef.current;
+    const scroller = scrollRef.current;
+    if (!screen || !scroller) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let dist = 1;
+    let frame = 0;
+    let lastK = -1;
+    let lastCollapsed = false;
+
+    const measure = () => {
+      const bar = screen.querySelector<HTMLElement>("[data-topbar]");
+      const header = headerRef.current;
+      const bottom = header ? header.offsetTop + header.offsetHeight : 0;
+      dist = Math.max(1, bottom - (bar?.offsetHeight ?? 0));
+    };
+    const update = () => {
+      frame = 0;
+      const raw = Math.min(1, Math.max(0, scroller.scrollTop / dist));
+      const k = reduce.matches ? (raw >= 0.5 ? 1 : 0) : raw;
+      if (k !== lastK) {
+        lastK = k;
+        screen.style.setProperty("--k", k.toFixed(3));
+      }
+      const next = raw >= 0.6;
+      if (next !== lastCollapsed) {
+        lastCollapsed = next;
+        setCollapsed(next);
+      }
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    const refresh = () => {
+      measure();
+      update();
+    };
+
+    refresh();
+    const ro = new ResizeObserver(refresh);
+    ro.observe(screen);
+    if (headerRef.current) ro.observe(headerRef.current);
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    reduce.addEventListener("change", refresh);
+    return () => {
+      cancelAnimationFrame(frame);
+      ro.disconnect();
+      scroller.removeEventListener("scroll", onScroll);
+      reduce.removeEventListener("change", refresh);
+    };
+  }, []);
+
+  return { screenRef, scrollRef, headerRef, collapsed };
+}
+
+/**
+ * The pinned top row of a screen: leading control (back or logo), a compact title that fades in
+ * as the large header scrolls away, and the screen's actions. Sits over the scroll container.
+ */
+export function TopBar({ leading, title, actions }: { leading?: ReactNode; title?: string; actions?: ReactNode }) {
+  return (
+    <div className={styles.topBar} data-topbar>
+      <div className={styles.topBarBg} aria-hidden="true" />
+      <div className={styles.topBarRow}>
+        {leading}
+        {title ? (
+          <span className={styles.topBarTitle} aria-hidden="true">
+            {title}
+          </span>
+        ) : null}
+        <div className={cx(styles.headerGroup, styles.topBarActions)}>{actions}</div>
+      </div>
+    </div>
+  );
+}
+
+/** Search shortcut that only appears in the collapsed bar, once the search field has scrolled away. */
+export function BarSearchButton({ shown, soft, onClick }: { shown: boolean; soft?: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className={cx(styles.roundBtn, soft && styles.roundBtnSoft, styles.topBarReveal)}
+      aria-label="Search destinations"
+      onClick={onClick}
+      inert={!shown}
+    >
+      <Img src="/icons/search-white.svg" size={22} eager />
+    </button>
   );
 }
 

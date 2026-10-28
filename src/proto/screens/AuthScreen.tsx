@@ -5,7 +5,7 @@ import { AuthFlow, authTitle, useAuthSteps } from "../auth/AuthFlow";
 import auth from "../auth/auth.module.css";
 import { useApp } from "../store";
 import { XMark } from "../ui/icons";
-import { BackButton, Hero, cx, ui } from "../ui/parts";
+import { BackButton, Hero, TopBar, cx, ui, useCollapse } from "../ui/parts";
 import cart from "./cart.module.css";
 import styles from "./esim.module.css";
 
@@ -19,6 +19,7 @@ export function AuthScreen() {
   const title = authTitle(nav.step);
   const isTop = state.stack[state.stack.length - 1]?.id === "auth";
   const overlayOpen = !!state.overlay;
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   useEffect(() => {
     if (!isTop || overlayOpen) return;
@@ -32,20 +33,24 @@ export function AuthScreen() {
   }, [isTop, overlayOpen, actions]);
 
   return (
-    <div className={ui.screen}>
-      <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
-      <header className={styles.header}>
-        <div className={ui.headerRow}>
-          <BackButton onClick={nav.depth > 1 ? nav.back : actions.back} />
+    <div className={ui.screen} ref={screenRef}>
+      <TopBar
+        leading={<BackButton onClick={nav.depth > 1 ? nav.back : actions.back} />}
+        title={title}
+        actions={
           <button type="button" className={ui.roundBtn} aria-label="Close" onClick={actions.back}>
             <XMark size={14} />
           </button>
-        </div>
-        <h1 className={styles.title} aria-live="polite">
-          {title}
-        </h1>
-      </header>
-      <div className={ui.scroll}>
+        }
+      />
+      <div className={ui.scroll} ref={scrollRef}>
+        <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
+        <header className={cx(styles.header, ui.collapseFade)} ref={headerRef}>
+          <div className={ui.headerRowSpace} />
+          <h1 className={styles.title} aria-live="polite">
+            {title}
+          </h1>
+        </header>
         <div className={cart.panelInner}>
           <section className={cx(cart.card, cart.cardOpen, auth.screenCard)} aria-label={title}>
             <AuthFlow nav={nav} variant="screen" onDone={actions.back} />

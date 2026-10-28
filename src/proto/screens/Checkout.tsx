@@ -4,11 +4,12 @@ import { useState } from "react";
 import { AuthFlow } from "../auth/AuthFlow";
 import { useApp } from "../store";
 import { Field, SelectField } from "../ui/Field";
-import { cx, ui } from "../ui/parts";
+import { cx, ui, useCollapse } from "../ui/parts";
 import {
   CardHead,
   CartItemsCard,
-  CheckoutHeader,
+  CheckoutHero,
+  CheckoutTopBar,
   ConsentRow,
   CouponRow,
   PaymentRow,
@@ -94,6 +95,7 @@ export function CheckoutScreen() {
   const [billingOpen, setBillingOpen] = useState(true);
   const [tried, setTried] = useState(false);
   const [consentNudge, setConsentNudge] = useState(0);
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   const step = !state.user ? 1 : !state.billing ? 2 : !state.payment ? 3 : 4;
   const missing = {
@@ -119,10 +121,11 @@ export function CheckoutScreen() {
   ].filter(Boolean) as string[];
 
   return (
-    <div className={ui.screen}>
-      <CheckoutHeader title="Checkout" photo="/img/hero-balloons.webp" step={step} />
-      <div className={cx(ui.scroll, plans.panel)}>
-        <div className={styles.panelInner}>
+    <div className={ui.screen} ref={screenRef}>
+      <CheckoutTopBar title="Checkout" />
+      <div className={ui.scroll} ref={scrollRef}>
+        <CheckoutHero title="Checkout" photo="/img/hero-balloons.webp" step={step} headerRef={headerRef} />
+        <div className={cx(plans.panel, styles.panelInner)}>
           {state.user ? (
             <section className={styles.card} aria-label="Contact information">
               <div className={styles.signedIn}>

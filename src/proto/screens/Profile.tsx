@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { AuthEntry } from "../auth/AuthFlow";
 import { PAYMENT_LABEL, useApp } from "../store";
 import { BrandWordmark } from "../ui/Brand";
-import { BottomNav, CartButton, CurrencyButton, Hero, cx, ui } from "../ui/parts";
+import { BottomNav, CartButton, CurrencyButton, Hero, TopBar, cx, ui, useCollapse } from "../ui/parts";
 import cart from "./cart.module.css";
 import styles from "./esim.module.css";
 
@@ -15,6 +15,7 @@ export function ProfileScreen() {
   const emailRef = useRef<HTMLButtonElement>(null);
   const accountRef = useRef<HTMLElement>(null);
   const openedAuth = useRef(false);
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   // Coming back from the full-screen sign-in flow: focus returns to what opened it,
   // or to the account card when the flow ended signed in.
@@ -25,19 +26,23 @@ export function ProfileScreen() {
   }, [isTop, user]);
 
   return (
-    <div className={ui.screen}>
-      <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
-      <header className={styles.header}>
-        <div className={ui.headerRow}>
-          <BrandWordmark />
-          <div className={ui.headerGroup}>
+    <div className={ui.screen} ref={screenRef}>
+      <TopBar
+        leading={<BrandWordmark />}
+        title="Profile"
+        actions={
+          <>
             <CartButton soft badge={false} />
             <CurrencyButton soft />
-          </div>
-        </div>
-        <h1 className={styles.title}>Profile</h1>
-      </header>
-      <div className={ui.scroll}>
+          </>
+        }
+      />
+      <div className={ui.scroll} ref={scrollRef}>
+        <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
+        <header className={cx(styles.header, ui.collapseFade)} ref={headerRef}>
+          <div className={ui.headerRowSpace} />
+          <h1 className={styles.title}>Profile</h1>
+        </header>
         <div className={cart.panelInner}>
           {user ? (
             <>

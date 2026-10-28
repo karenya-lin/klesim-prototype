@@ -85,11 +85,36 @@
   flex-shrink: 0;
 }
 
+/* title row + close stay pinned while the sheet body scrolls (bleeds over the body padding;
+   sticky offsets count from the body's content edge, hence -16px) */
 .head {
+  position: sticky;
+  top: -16px;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
+  margin: -16px -16px 0;
+  padding: 20px 16px 4px;
+  background: var(--c-surface-light);
+}
+
+/* hairline under the pinned row once the body has scrolled */
+@supports (animation-timeline: scroll()) {
+  .head {
+    animation: headStuck linear both;
+    animation-timeline: scroll(nearest block);
+    animation-range: 0 24px;
+  }
+}
+
+@keyframes headStuck {
+  from {
+    box-shadow: 0 1px 0 transparent;
+  }
+  to {
+    box-shadow: 0 1px 0 var(--c-g2);
+  }
 }
 
 .headEnd {

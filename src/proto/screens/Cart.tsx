@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useApp } from "../store";
-import { cx, ui } from "../ui/parts";
-import { CartItemsCard, CheckoutHeader, ConsentRow, CouponRow, PaymentRow, TotalsBar } from "./CartParts";
+import { cx, ui, useCollapse } from "../ui/parts";
+import { CartItemsCard, CheckoutHero, CheckoutTopBar, ConsentRow, CouponRow, PaymentRow, TotalsBar } from "./CartParts";
 import plans from "./plans.module.css";
 import styles from "./cart.module.css";
 
@@ -14,6 +14,7 @@ export function CartScreen() {
   const signedIn = !!state.user && !!state.billing;
   const paymentError = tried && !state.payment;
   const consentError = tried && !state.consent;
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   const purchase = () => {
     setTried(true);
@@ -24,10 +25,15 @@ export function CartScreen() {
   };
 
   return (
-    <div className={ui.screen}>
-      <CheckoutHeader title="Cart" photo={signedIn ? "/img/hero-balloons.webp" : "/img/hero-wing-bw.webp"} share={signedIn} />
-      <div className={cx(ui.scroll, plans.panel)}>
-        <div className={styles.panelInner}>
+    <div className={ui.screen} ref={screenRef}>
+      <CheckoutTopBar title="Cart" share={signedIn} />
+      <div className={ui.scroll} ref={scrollRef}>
+        <CheckoutHero
+          title="Cart"
+          photo={signedIn ? "/img/hero-balloons.webp" : "/img/hero-wing-bw.webp"}
+          headerRef={headerRef}
+        />
+        <div className={cx(plans.panel, styles.panelInner)}>
           <CartItemsCard defaultOpen={!signedIn} />
           <CouponRow />
           <PaymentRow error={paymentError} />

@@ -1,20 +1,23 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { PLACE_ROWS, WHY_US } from "../data";
 import { useApp, useMoney } from "../store";
 import { BrandWordmark } from "../ui/Brand";
 import { Img } from "../ui/Img";
 import { CartAdd } from "../ui/icons";
 import {
+  BarSearchButton,
   BottomNav,
   CartButton,
   CurrencyButton,
   FaqSection,
   GuideLinksSection,
   Hero,
+  TopBar,
   cx,
   ui,
+  useCollapse,
 } from "../ui/parts";
 import styles from "./home.module.css";
 
@@ -22,7 +25,7 @@ export function HomeScreen() {
   const { actions } = useApp();
   const money = useMoney();
   const [tab, setTab] = useState<"country" | "regional">("country");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { screenRef, scrollRef, headerRef, collapsed } = useCollapse();
 
   const openPlans = (destination: string) => {
     actions.setDestination(destination);
@@ -30,20 +33,24 @@ export function HomeScreen() {
   };
 
   return (
-    <div className={ui.screen}>
+    <div className={ui.screen} ref={screenRef}>
+      <h1 className="sr-only">KLeSIM home</h1>
+      <TopBar
+        leading={<BrandWordmark />}
+        actions={
+          <>
+            <BarSearchButton soft shown={collapsed} onClick={() => actions.navigate("search", "fade")} />
+            <CartButton soft badge={false} />
+            <CurrencyButton soft />
+          </>
+        }
+      />
       <div className={ui.scroll} ref={scrollRef}>
         <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 165px)" shade="down" rounded />
         <div className={styles.page}>
-          <h1 className="sr-only">KLeSIM home</h1>
-          <div className={styles.topRow}>
-            <BrandWordmark />
-            <div className={ui.headerGroup}>
-              <CartButton soft badge={false} />
-              <CurrencyButton soft />
-            </div>
-          </div>
+          <div className={ui.headerRowSpace} />
 
-          <section className={styles.promo} aria-label="Limited time sale">
+          <section className={cx(styles.promo, ui.collapseFade)} aria-label="Limited time sale" ref={headerRef}>
             <div className={styles.promoHead}>
               <span>KLeSIM limited time sale</span>
               <span className={styles.decoSlot} aria-hidden="true">

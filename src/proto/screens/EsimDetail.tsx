@@ -3,7 +3,18 @@
 import { useState } from "react";
 import { useApp } from "../store";
 import { Img } from "../ui/Img";
-import { BackButton, BottomNav, CartButton, CurrencyButton, Hero, ShareButton, cx, ui } from "../ui/parts";
+import {
+  BackButton,
+  BottomNav,
+  CartButton,
+  CurrencyButton,
+  Hero,
+  ShareButton,
+  TopBar,
+  cx,
+  ui,
+  useCollapse,
+} from "../ui/parts";
 import { EsimCard, SAMPLE_ESIMS } from "./MyEsim";
 import plans from "./plans.module.css";
 import styles from "./esim.module.css";
@@ -24,6 +35,7 @@ function CopyIcon() {
 export function EsimDetailScreen() {
   const { actions } = useApp();
   const [showCode, setShowCode] = useState(false);
+  const { screenRef, scrollRef, headerRef } = useCollapse();
 
   const copyCode = async () => {
     try {
@@ -35,28 +47,32 @@ export function EsimDetailScreen() {
   };
 
   return (
-    <div className={ui.screen}>
-      <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
-      <header className={styles.header} style={{ gap: 15 }}>
-        <div className={ui.headerRow}>
-          <BackButton />
-          <div className={ui.headerGroup}>
+    <div className={ui.screen} ref={screenRef}>
+      <TopBar
+        leading={<BackButton />}
+        title="eSIM"
+        actions={
+          <>
             <ShareButton />
             <CartButton />
             <CurrencyButton />
-          </div>
-        </div>
-        <div className={styles.titleRow}>
-          <h1 className={styles.title}>eSIM</h1>
-          <span className={plans.compat} style={{ width: "auto" }}>
-            <span className={plans.compatInfo}>
-              <Img src="/icons/check-circle-green.svg" size={22} style={{ margin: 1 }} eager />
-              Compatible with this device
+          </>
+        }
+      />
+      <div className={ui.scroll} ref={scrollRef}>
+        <Hero src="/img/hero-wing.webp" height="calc(var(--sb-h) + 114px)" shade="down" />
+        <header className={cx(styles.header, ui.collapseFade)} style={{ gap: 15 }} ref={headerRef}>
+          <div className={ui.headerRowSpace} />
+          <div className={styles.titleRow}>
+            <h1 className={styles.title}>eSIM</h1>
+            <span className={plans.compat} style={{ width: "auto" }}>
+              <span className={plans.compatInfo}>
+                <Img src="/icons/check-circle-green.svg" size={22} style={{ margin: 1 }} eager />
+                Compatible with this device
+              </span>
             </span>
-          </span>
-        </div>
-      </header>
-      <div className={ui.scroll}>
+          </div>
+        </header>
         <div className={styles.detail}>
           <EsimCard data={SAMPLE_ESIMS[1]} flat />
           <div className={styles.twoBtns}>

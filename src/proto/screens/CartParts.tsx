@@ -1,35 +1,45 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type Ref } from "react";
 import { currencyOf } from "../data";
 import { PAYMENT_LABEL, cartTotals, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
 import { AlertCircle, ChevronSmall } from "../ui/icons";
-import { BackButton, CloseButton, CurrencyButton, Hero, ShareButton, cx, ui } from "../ui/parts";
+import { BackButton, CloseButton, CurrencyButton, Hero, ShareButton, TopBar, cx, ui } from "../ui/parts";
 import styles from "./cart.module.css";
 
-export function CheckoutHeader({
+export function CheckoutTopBar({ title, share }: { title: string; share?: boolean }) {
+  return (
+    <TopBar
+      leading={<BackButton />}
+      title={title}
+      actions={
+        <>
+          {share ? <ShareButton /> : null}
+          <CurrencyButton />
+        </>
+      }
+    />
+  );
+}
+
+/** Large cart / checkout header (photo, title, steps); scrolls under the pinned CheckoutTopBar. */
+export function CheckoutHero({
   title,
   photo,
-  share,
   step,
+  headerRef,
 }: {
   title: string;
   photo: string;
-  share?: boolean;
   step?: number;
+  headerRef: Ref<HTMLElement>;
 }) {
   return (
     <>
       <Hero src={photo} height="calc(var(--sb-h) + 114px)" shade="up" />
-      <header className={styles.header}>
-        <div className={ui.headerRow}>
-          <BackButton />
-          <div className={ui.headerGroup}>
-            {share ? <ShareButton /> : null}
-            <CurrencyButton />
-          </div>
-        </div>
+      <header className={cx(styles.header, ui.collapseFade)} ref={headerRef}>
+        <div className={ui.headerRowSpace} />
         <div className={cx(styles.titleRow, step ? styles.titleRowSplit : null)}>
           <h1 className={styles.title}>{title}</h1>
           {step ? <StepIndicator step={step} /> : null}
