@@ -64,7 +64,7 @@ export function HomeScreen() {
               </button>
             </div>
             <div className={styles.promoBar}>
-              <button type="button" className={styles.circleBtn} aria-label="Help">
+              <button type="button" className={styles.circleBtn} aria-label="User guide" onClick={() => actions.navigate("guide")}>
                 <Img src="/icons/question.svg" width={20} height={22} />
               </button>
               <button type="button" className={styles.circleBtn} aria-label="Scan a QR code">

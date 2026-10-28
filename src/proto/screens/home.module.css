@@ -94,7 +94,7 @@
 .esim3dInline {
   position: absolute;
   left: 50%;
-  top: -23px;
+  bottom: -8px;
   width: 58px;
   height: 44px;
   transform: translateX(-50%);
