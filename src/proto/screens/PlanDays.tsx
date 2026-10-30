@@ -3,7 +3,7 @@
 import { DAY_OPTIONS } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { cx, ui, useCollapse } from "../ui/parts";
+import { cx, radioKeys, ui, useCollapse } from "../ui/parts";
 import { PlanBottomBar, PlanHero, PlanTopBar } from "./PlanParts";
 import styles from "./plans.module.css";
 
@@ -57,6 +57,7 @@ export function PlanDaysScreen() {
                     aria-checked={selected}
                     className={cx(styles.dayOption, selected && styles.dayOptionSelected)}
                     onClick={() => actions.setDays(d.days)}
+                    {...radioKeys(selected)}
                   >
                     <span className={styles.dayLabel}>{d.label}</span>
                     <span className={styles.dayPrice}>{money(d.price)}</span>

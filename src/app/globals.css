@@ -97,6 +97,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* never leave one word alone on the last line of a wrapped label or paragraph */
+  text-wrap: pretty;
 }
 
 button,
@@ -150,6 +152,12 @@ ol {
   outline-offset: 2px;
   border-radius: 12px;
   box-shadow: 0 0 0 2px var(--c-focus-halo);
+}
+
+/* a screen heading takes focus after a screen change only to start reading there; it is not a control */
+h1[tabindex="-1"]:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .sr-only {

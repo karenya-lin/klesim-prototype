@@ -12,6 +12,7 @@ import {
   CheckoutTopBar,
   ConsentRow,
   CouponRow,
+  HelpRow,
   PaymentRow,
   TotalsBar,
 } from "./CartParts";
@@ -45,14 +46,23 @@ const SAMPLE: BillingForm = {
   country: "France",
 };
 
-const REQUIRED: (keyof BillingForm)[] = ["first", "last", "address", "zip", "city", "country"];
+/** Required fields, each with the message that says what to enter. */
+const REQUIRED: Partial<Record<keyof BillingForm, string>> = {
+  first: "Enter your first name.",
+  last: "Enter your last name.",
+  address: "Enter your street address.",
+  zip: "Enter your zip code.",
+  city: "Enter your city.",
+  country: "Choose your country.",
+};
+const REQUIRED_KEYS = Object.keys(REQUIRED) as (keyof BillingForm)[];
 
 function BillingFormCard({ onDone }: { onDone: () => void }) {
   const { state, actions } = useApp();
   const [f, setF] = useState<BillingForm>(EMPTY);
   const [tried, setTried] = useState(false);
   const set = (k: keyof BillingForm) => (v: string) => setF({ ...f, [k]: v });
-  const err = (k: keyof BillingForm) => (tried && REQUIRED.includes(k) && !f[k].trim() ? "Required" : null);
+  const err = (k: keyof BillingForm) => (tried && !f[k].trim() ? (REQUIRED[k] ?? null) : null);
   const fill = () => setF({ ...SAMPLE, first: state.user?.name ?? SAMPLE.first });
 
   return (
@@ -62,10 +72,10 @@ function BillingFormCard({ onDone }: { onDone: () => void }) {
       onSubmit={(e) => {
         e.preventDefault();
         setTried(true);
-        if (REQUIRED.some((k) => !f[k].trim())) return;
+        if (REQUIRED_KEYS.some((k) => !f[k].trim())) return;
         actions.setBilling({
           name: `${f.first} ${f.last}`,
-          line: `${f.address}${f.address2 ? `, ${f.address2}` : ""},${f.zip} ${f.city},${f.country}`,
+          line: `${f.address}${f.address2 ? `, ${f.address2}` : ""}, ${f.zip} ${f.city}, ${f.country}`,
         });
         onDone();
       }}
@@ -73,15 +83,58 @@ function BillingFormCard({ onDone }: { onDone: () => void }) {
       <button type="button" className={styles.sampleLink} onClick={fill}>
         Fill sample address
       </button>
-      <Field label="First name" autoComplete="given-name" value={f.first} onChange={set("first")} error={err("first")} />
-      <Field label="Last name" autoComplete="family-name" value={f.last} onChange={set("last")} error={err("last")} />
-      <Field label="Enterprise (optional)" autoComplete="organization" value={f.company} onChange={set("company")} />
-      <Field label="VAT (optional)" value={f.vat} onChange={set("vat")} />
-      <Field label="Address" autoComplete="address-line1" value={f.address} onChange={set("address")} error={err("address")} />
+      <Field
+        label="First name"
+        autoComplete="given-name"
+        aria-required
+        value={f.first}
+        onChange={set("first")}
+        error={err("first")}
+      />
+      <Field
+        label="Last name"
+        autoComplete="family-name"
+        aria-required
+        value={f.last}
+        onChange={set("last")}
+        error={err("last")}
+      />
+      <Field label="Company (optional)" autoComplete="organization" value={f.company} onChange={set("company")} />
+      <Field label="VAT number (optional)" value={f.vat} onChange={set("vat")} />
+      <Field
+        label="Address"
+        autoComplete="address-line1"
+        aria-required
+        value={f.address}
+        onChange={set("address")}
+        error={err("address")}
+      />
       <Field label="Address 2 (optional)" autoComplete="address-line2" value={f.address2} onChange={set("address2")} />
-      <Field label="Zip code" autoComplete="postal-code" value={f.zip} onChange={set("zip")} error={err("zip")} />
-      <Field label="City" autoComplete="address-level2" value={f.city} onChange={set("city")} error={err("city")} />
-      <SelectField label="Country" value={f.country} onChange={set("country")} options={COUNTRIES} error={err("country")} />
+      <Field
+        label="Zip code"
+        autoComplete="postal-code"
+        aria-required
+        value={f.zip}
+        onChange={set("zip")}
+        error={err("zip")}
+      />
+      <Field
+        label="City"
+        autoComplete="address-level2"
+        aria-required
+        value={f.city}
+        onChange={set("city")}
+        error={err("city")}
+      />
+      <SelectField
+        label="Country"
+        autoComplete="country-name"
+        required
+        value={f.country}
+        onChange={set("country")}
+        options={COUNTRIES}
+        error={err("country")}
+      />
       <button type="submit" className={cx(ui.btn, ui.btnPrimary, ui.btnBlock)}>
         Continue
       </button>
@@ -196,6 +249,7 @@ export function CheckoutScreen() {
               To purchase, please {problems.join(", ")}.
             </p>
           ) : null}
+          <HelpRow />
         </div>
       </div>
       <TotalsBar label="Purchase" onPress={purchase} payment />

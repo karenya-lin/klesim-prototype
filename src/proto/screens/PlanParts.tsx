@@ -80,7 +80,7 @@ export function PlanHero({ headerRef }: { headerRef: Ref<HTMLElement> }) {
             Compatible with this device
           </span>
           <button type="button" className={styles.compatLink} onClick={() => actions.navigate("guide")}>
-            User Guide
+            User guide
           </button>
         </div>
       </header>
@@ -96,7 +96,7 @@ export function PlanBottomBar({ onCheckout }: { onCheckout: () => void }) {
     <div className={ui.barStack}>
       <div className={ui.bar}>
         <div className={ui.amount}>
-          <span className={ui.amountLabel}>Subtotal (Tax excluded)</span>
+          <span className={ui.amountLabel}>Subtotal (Tax&nbsp;excluded)</span>
           <span className={ui.amountValue} aria-live="polite">
             {money(subtotal)}
           </span>
@@ -110,7 +110,8 @@ export function PlanBottomBar({ onCheckout }: { onCheckout: () => void }) {
           aria-label="Add to cart"
           onClick={() => {
             actions.addToCart();
-            actions.toast("cart", "Add to cart", `Added ${state.qty} eSIM(s)`);
+            const what = `${state.qty} ${findDestination(state.destination).name} eSIM${state.qty > 1 ? "s" : ""}`;
+            actions.toast("cart", "Added to cart", what);
           }}
         >
           <CartAdd />

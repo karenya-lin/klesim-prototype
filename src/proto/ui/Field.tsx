@@ -87,12 +87,16 @@ export function SelectField({
   onChange,
   options,
   error,
+  required,
+  autoComplete,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   options: string[];
   error?: ReactNode;
+  required?: boolean;
+  autoComplete?: string;
 }) {
   const id = useId();
   return (
@@ -107,7 +111,10 @@ export function SelectField({
           className={cx(styles.input, styles.select, !value && styles.selectEmpty)}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          autoComplete={autoComplete}
+          aria-required={required || undefined}
           aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-help` : undefined}
         >
           <option value="">{label}</option>
           {options.map((o) => (
@@ -119,7 +126,7 @@ export function SelectField({
         <Img src="/icons/select-caret.svg" size={24} className={styles.selectCaret} />
       </div>
       {error ? (
-        <p className={cx(styles.helper, styles.helperError)} role="alert">
+        <p id={`${id}-help`} className={cx(styles.helper, styles.helperError)} role="alert">
           {error}
         </p>
       ) : null}

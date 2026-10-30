@@ -82,11 +82,11 @@ function Legal() {
     <p className={styles.legal}>
       By continuing, you agree to KLeSIM’s{" "}
       <a href="#terms" onClick={(e) => e.preventDefault()}>
-        Terms of Service
+        Terms&nbsp;of&nbsp;Service
       </a>{" "}
       and{" "}
       <a href="#privacy" onClick={(e) => e.preventDefault()}>
-        Privacy Policy
+        Privacy&nbsp;Policy
       </a>
       .
     </p>
@@ -320,7 +320,7 @@ function StepForms({
         <p className={styles.legal}>
           Already have an account?{" "}
           <button type="button" className={styles.inlineLink} onClick={() => go({ id: "password" })}>
-            Login
+            Sign in
           </button>
         </p>
       </form>
@@ -428,7 +428,7 @@ function CodeStep({
       ? "Verify your email. We sent a 6-digit code to "
       : purpose === "device"
         ? "New device sign-in. We sent a 6-digit code to "
-        : "We sent a temporary login code to ";
+        : "We sent a temporary sign-in code to ";
 
   return (
     <form
@@ -456,7 +456,7 @@ function CodeStep({
         </button>
       </p>
       <Field
-        label="Enter login code"
+        label="Enter sign-in code"
         value={code}
         onChange={(v) => {
           setCode(v.replace(/\D/g, "").slice(0, 6));

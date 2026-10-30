@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type ReactNode, type Ref } from "re
 import { currencyOf } from "../data";
 import { PAYMENT_LABEL, cartTotals, useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { AlertCircle, ChevronSmall } from "../ui/icons";
+import { AlertCircle, ChatSupport, ChevronSmall } from "../ui/icons";
 import { BackButton, CloseButton, CurrencyButton, Hero, ShareButton, TopBar, cx, ui } from "../ui/parts";
 import styles from "./cart.module.css";
 
@@ -51,19 +51,25 @@ export function CheckoutHero({
 
 const STEP_NAMES = ["Contact", "Billing address", "Payment", "Review"];
 
+/** Progress dots with the current step named under them, so the dots never have to be decoded. */
 function StepIndicator({ step }: { step: number }) {
   return (
-    <div className={styles.steps} role="img" aria-label={`Step ${step} of 4: ${STEP_NAMES[step - 1]}`}>
-      {STEP_NAMES.map((n, i) => (
-        <span key={n} style={{ display: "contents" }}>
-          {i > 0 ? <span className={styles.stepLine} /> : null}
-          {i + 1 === step ? (
-            <span className={styles.stepPill}>{step}</span>
-          ) : (
-            <span className={cx(styles.stepDot, i + 1 < step && styles.stepDotDone)} />
-          )}
-        </span>
-      ))}
+    <div className={styles.stepsCol}>
+      <div className={styles.steps} aria-hidden="true">
+        {STEP_NAMES.map((n, i) => (
+          <span key={n} style={{ display: "contents" }}>
+            {i > 0 ? <span className={styles.stepLine} /> : null}
+            {i + 1 === step ? (
+              <span className={styles.stepPill}>{step}</span>
+            ) : (
+              <span className={cx(styles.stepDot, i + 1 < step && styles.stepDotDone)} />
+            )}
+          </span>
+        ))}
+      </div>
+      <p className={styles.stepLabel}>
+        Step {step} of {STEP_NAMES.length}: {STEP_NAMES[step - 1]}
+      </p>
     </div>
   );
 }
@@ -101,22 +107,63 @@ export function CardHead({
   );
 }
 
+/**
+ * Removing a line leaves an inline "removed · Undo" row at the top of the list (no timer, so it can be reached
+ * by keyboard); focus moves to Undo, and back to the restored line after undoing.
+ */
 export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
   const { state, actions } = useApp();
   const money = useMoney();
   const [open, setOpen] = useState(!!defaultOpen);
   const totals = cartTotals(state);
+  const linesRef = useRef<HTMLDivElement>(null);
+  const undoRef = useRef<HTMLButtonElement>(null);
+  const [focusTarget, setFocusTarget] = useState<{ key: string | null; n: number }>({ key: null, n: 0 });
+  const removed = state.removed;
+
+  useEffect(() => {
+    if (!focusTarget.n) return;
+    if (focusTarget.key) {
+      linesRef.current?.querySelector<HTMLElement>(`[data-line="${focusTarget.key}"] button`)?.focus();
+    } else {
+      undoRef.current?.focus();
+    }
+  }, [focusTarget]);
+
+  const undoRow = removed ? (
+    <div className={styles.removed}>
+      <span>{removed.item.title} removed from your cart.</span>
+      <button
+        ref={undoRef}
+        type="button"
+        className={styles.undoBtn}
+        aria-label={`Undo removing ${removed.item.title}`}
+        onClick={() => {
+          actions.undoRemove();
+          setFocusTarget((f) => ({ key: removed.item.key, n: f.n + 1 }));
+        }}
+      >
+        Undo
+      </button>
+    </div>
+  ) : null;
+
   return (
     <section className={cx(styles.card, open && styles.cardOpen)} aria-label="Cart items">
       <CardHead
         title={open ? `Cart items (${totals.count})` : `Cart items (${totals.count}) - ${money(totals.product)}`}
-        sub="Maximum 10 cards per purchase"
+        sub="Up to 10 eSIMs per order"
         open={open}
         onToggle={() => setOpen(!open)}
         controls="cart-lines"
       />
       {open ? (
-        <div id="cart-lines" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
+        <div
+          id="cart-lines"
+          ref={linesRef}
+          style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}
+        >
+          {undoRow}
           {state.cart.length === 0 ? (
             <div className={styles.empty}>
               <p>Your cart is empty.</p>
@@ -128,7 +175,7 @@ export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
             state.cart.map((c, i) => (
               <div key={c.key} style={{ display: "contents" }}>
                 {i > 0 ? <span className={styles.divider} aria-hidden="true" /> : null}
-                <div className={styles.line}>
+                <div className={styles.line} data-line={c.key}>
                   <div className={styles.lineHead}>
                     <span className={styles.flagRing} aria-hidden="true">
                       {c.flag ? <Img src={c.flag} size={36} /> : <Img src="/icons/klesim-mark.svg" size={28} />}
@@ -155,7 +202,10 @@ export function CartItemsCard({ defaultOpen }: { defaultOpen?: boolean }) {
                           type="button"
                           className={ui.stepBtn}
                           aria-label={`Remove ${c.title}`}
-                          onClick={() => actions.removeCartItem(c.key)}
+                          onClick={() => {
+                            actions.removeCartItem(c.key);
+                            setFocusTarget((f) => ({ key: null, n: f.n + 1 }));
+                          }}
                         >
                           <Img src="/icons/trash.svg" size={24} />
                         </button>
@@ -214,9 +264,10 @@ export function CouponRow() {
       >
         <span className={styles.cardHeadText}>
           <span className={styles.cardTitle}>
-            {has ? `Coupon (${state.coupons.length}) - ${money(totals.coupon)}` : "Do you have coupon?"}
+            {has ? `Coupon (${state.coupons.length}) - ${money(totals.coupon)}` : "Have a coupon code?"}
           </span>
         </span>
+        <span className={styles.rowAction}>{has ? "Change" : "Add"}</span>
         <span className={cx(styles.iconCircle, has && styles.iconCircleDark)}>
           <Img src={has ? "/icons/coupon-white.svg" : "/icons/coupon.svg"} size={24} />
         </span>
@@ -241,11 +292,16 @@ export function PaymentRow({ error }: { error?: boolean }) {
           <span className={styles.cardTitle}>{p ? PAYMENT_LABEL[p] : "Choose payment method"}</span>
           {error ? (
             <span id="payment-error" className="sr-only">
-              Required
+              Choose a payment method to continue.
             </span>
           ) : null}
-          {p === "card" ? <span className={styles.cardSub}>Card details are entered with the payment provider</span> : null}
+          {p === "card" ? (
+            <span className={styles.cardSub}>Card details are entered with the payment provider</span>
+          ) : p ? (
+            <span className={styles.cardSub}>Payment method</span>
+          ) : null}
         </span>
+        {p ? <span className={styles.rowAction}>Change</span> : null}
         <span className={cx(styles.iconCircle, p && styles.iconCircleSelected)}>
           <Img src="/icons/payment.svg" size={24} />
         </span>
@@ -291,16 +347,16 @@ export function ConsentRow({ error, nudge = 0 }: { error?: boolean; nudge?: numb
           />
         </span>
         <label htmlFor={id} id={`${id}-text`} className={styles.consentText}>
-          I confirm that I have an device compatible with eSIM.
+          I confirm that my device is compatible with eSIM.
           <br />
           <br />
           By clicking “Purchase”, you agree to the{" "}
           <a href="#refund" onClick={(e) => e.preventDefault()}>
-            Refund Policy
+            Refund&nbsp;Policy
           </a>{" "}
           and{" "}
           <a href="#terms" onClick={(e) => e.preventDefault()}>
-            Terms of Service
+            Terms&nbsp;of&nbsp;Service
           </a>
           .
         </label>
@@ -312,6 +368,28 @@ export function ConsentRow({ error, nudge = 0 }: { error?: boolean; nudge?: numb
         </p>
       ) : null}
     </div>
+  );
+}
+
+/** Help at the point of purchase; same row pattern as coupon and payment. */
+export function HelpRow() {
+  const { actions } = useApp();
+  return (
+    <section className={styles.card}>
+      <button
+        type="button"
+        className={styles.cardHead}
+        onClick={() => actions.toast("info", "Opening chat", "A support agent will reply here")}
+      >
+        <span className={styles.cardHeadText}>
+          <span className={styles.cardTitle}>Need help?</span>
+        </span>
+        <span className={styles.rowAction}>Chat with us</span>
+        <span className={styles.iconCircle}>
+          <ChatSupport />
+        </span>
+      </button>
+    </section>
   );
 }
 

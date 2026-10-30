@@ -130,7 +130,7 @@ export function HomeScreen() {
               <button type="button" className={styles.offerCard} onClick={() => openPlans("France")}>
                 <span className={styles.offerInfo}>
                   <Img src="/icons/esim-card.svg" width={60} height={40} />
-                  <span className={styles.offerTitle}>eSim France Format : eSim - Package:100GB</span>
+                  <span className={styles.offerTitle}>France eSIM · 100 GB</span>
                 </span>
                 <Img src="/img/medal.webp" width={64} height={67} className={styles.medal} />
                 <span className={styles.taxNote}>Amount (Tax excluded)</span>

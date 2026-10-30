@@ -3,7 +3,7 @@
 import { PLANS, type Plan } from "../data";
 import { useApp, useMoney } from "../store";
 import { Img } from "../ui/Img";
-import { Radio, cx, ui, useCollapse } from "../ui/parts";
+import { Radio, cx, radioKeys, ui, useCollapse } from "../ui/parts";
 import { CouponRibbon, PlanBottomBar, PlanHero, PlanTopBar } from "./PlanParts";
 import styles from "./plans.module.css";
 
@@ -36,6 +36,7 @@ function PlanCard({ plan }: { plan: Plan }) {
           aria-checked={selected}
           aria-label={`${plan.title}${plan.unit ?? ""}, ${plan.duration}, from ${money(plan.price)}`}
           className={styles.radioBtn}
+          {...radioKeys(selected)}
           onClick={(e) => {
             e.stopPropagation();
             select();

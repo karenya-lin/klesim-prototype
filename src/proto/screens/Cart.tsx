@@ -3,7 +3,16 @@
 import { useState } from "react";
 import { useApp } from "../store";
 import { cx, ui, useCollapse } from "../ui/parts";
-import { CartItemsCard, CheckoutHero, CheckoutTopBar, ConsentRow, CouponRow, PaymentRow, TotalsBar } from "./CartParts";
+import {
+  CartItemsCard,
+  CheckoutHero,
+  CheckoutTopBar,
+  ConsentRow,
+  CouponRow,
+  HelpRow,
+  PaymentRow,
+  TotalsBar,
+} from "./CartParts";
 import plans from "./plans.module.css";
 import styles from "./cart.module.css";
 
@@ -47,6 +56,7 @@ export function CartScreen() {
                   : "Confirm your device is compatible with eSIM."}
             </p>
           ) : null}
+          <HelpRow />
         </div>
       </div>
       <TotalsBar

@@ -27,10 +27,25 @@
   color: var(--c-on-dark);
 }
 
+.stepsCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
 .steps {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.stepLabel {
+  font-size: 12px;
+  line-height: normal;
+  font-weight: 500;
+  color: var(--c-on-dark);
+  text-align: right;
 }
 
 .stepPill {
@@ -150,6 +165,16 @@
   justify-content: center;
 }
 
+/* visible verb next to a row's icon, so the row reads as an action ("Add", "Change", "Chat with us") */
+.rowAction {
+  flex: none;
+  font-family: var(--font-sf);
+  font-size: 14px;
+  color: var(--c-text-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .iconCircleDark {
   background: var(--c-text-dark);
 }
@@ -257,11 +282,39 @@
   font-size: 12px;
   line-height: 1.3;
   color: var(--c-text-muted);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
+}
+
+/* "<item> removed from your cart. Undo" row, shown at the top of the list after a line is removed */
+.removed {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 8px 8px 16px;
+  border-radius: var(--r-20);
+  background: var(--c-g3);
+  font-size: 14px;
+  color: var(--c-text-dark);
+}
+
+.removed span {
+  flex: 1 1 0;
+}
+
+.undoBtn {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-text-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.undoBtn:focus-visible {
+  border-radius: var(--r-pill);
 }
 
 .divider {

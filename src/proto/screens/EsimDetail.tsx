@@ -93,7 +93,7 @@ export function EsimDetailScreen() {
               Details
             </button>
           </div>
-          <h2 className={styles.h20}>Activate method</h2>
+          <h2 className={styles.h20}>Activation method</h2>
           <button
             type="button"
             className={cx(ui.btn, ui.btnPrimary, ui.btnBlock)}
@@ -106,7 +106,11 @@ export function EsimDetailScreen() {
             OR
             <span />
           </div>
-          <p className={styles.manualTitle}>Activate manually by SMDP and activation code</p>
+          <p className={styles.manualTitle}>Add it manually</p>
+          <p className={styles.manualHint}>
+            In your phone’s eSIM settings, enter the SM-DP+ address and the activation code below. SM-DP+ is the
+            server your phone downloads the eSIM from.
+          </p>
           <div className={styles.tiles}>
             <button
               type="button"
@@ -114,15 +118,15 @@ export function EsimDetailScreen() {
               onClick={() => actions.toast("info", "Opening eSIM settings", "Add the plan with the SM-DP+ address")}
             >
               <span className={styles.tileText}>
-                <strong>SMDP</strong>
-                <span>Click to open</span>
+                <strong>SM-DP+</strong>
+                <span>Open settings</span>
               </span>
               <Img src="/icons/arrow-up-right-dark.svg" size={24} />
             </button>
             <button type="button" className={styles.tile} onClick={copyCode}>
               <span className={styles.tileText}>
                 <strong>Code</strong>
-                <span>Click to copy</span>
+                <span>Copy code</span>
               </span>
               <CopyIcon />
             </button>
@@ -133,11 +137,9 @@ export function EsimDetailScreen() {
               <span className={styles.kvValue}>{SMDP_ADDRESS}</span>
             </div>
             <div className={styles.kvItem}>
-              <span className={styles.kvLabel} id="code-label">
-                Activation code
-              </span>
+              <span className={styles.kvLabel}>Activation code</span>
               <span className={styles.kvValue}>
-                <span className={styles.mono} aria-labelledby="code-label" style={{ flex: "1 1 0" }}>
+                <span className={styles.mono} style={{ flex: "1 1 0" }}>
                   {showCode ? ACTIVATION_CODE : "•••• •••• •••• ••••"}
                 </span>
                 <button

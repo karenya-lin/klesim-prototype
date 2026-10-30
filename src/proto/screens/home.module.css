@@ -403,6 +403,7 @@
 
 .taxNote {
   width: 100%;
+  margin-top: 6px;
   font-family: var(--font-sf);
   font-size: 12px;
   color: var(--c-text-muted);
@@ -489,4 +490,38 @@
   width: 72px;
   height: 50px;
   padding: 0;
+}
+
+/* W320: on the narrowest phones the tabs, the store button and the sale header must all fit in one row.
+   The 3D eSIM is decoration, so it gives way first. */
+@media (max-width: 360px) {
+  .placesHead {
+    padding: 0 12px;
+  }
+
+  .tab {
+    padding: 12px;
+  }
+
+  .storeBtn {
+    flex: none;
+    margin-left: auto;
+  }
+
+  .promoHead {
+    gap: 8px;
+  }
+
+  .decoSlot {
+    display: none;
+  }
+
+  .promoOffers {
+    flex: none;
+  }
+
+  .findPill {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 }

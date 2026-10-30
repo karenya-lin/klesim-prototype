@@ -23,7 +23,7 @@ function focusables(root: HTMLElement) {
     root.querySelectorAll<HTMLElement>(
       'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
     ),
-  ).filter((el) => !el.hasAttribute("inert"));
+  ).filter((el) => !el.hasAttribute("inert") && el.tabIndex >= 0);
 }
 
 export function Sheet({ title, titleText, leading, subhead, children, footer, variant = "sheet", hideTitle, onClose }: Props) {

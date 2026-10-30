@@ -237,9 +237,23 @@ button.card:hover:not(:active) {
   color: var(--c-text-dark);
 }
 
+.manualHint {
+  margin-top: -8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--c-text-sub);
+}
+
 .tiles {
   display: flex;
   gap: 16px;
+}
+
+/* W320: two tiles side by side would push their labels out of the screen */
+@media (max-width: 360px) {
+  .tiles {
+    flex-direction: column;
+  }
 }
 
 .tile {

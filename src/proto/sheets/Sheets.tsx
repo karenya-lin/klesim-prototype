@@ -26,7 +26,7 @@ import {
 } from "../store";
 import { Img } from "../ui/Img";
 import { ChatSupport, QuestionCircle } from "../ui/icons";
-import { cx, ui } from "../ui/parts";
+import { cx, radioKeys, ui } from "../ui/parts";
 import { Sheet } from "./Sheet";
 import home from "../screens/home.module.css";
 import styles from "./sheets.module.css";
@@ -157,6 +157,7 @@ export function DestinationSheet() {
               aria-checked={selected}
               className={cx(styles.option, selected && styles.optionSelected)}
               onClick={() => setPicked(d.id)}
+              {...radioKeys(selected)}
             >
               <Img src="/icons/esim-card.svg" width={60} height={40} />
               <span className={styles.optionText}>
@@ -466,6 +467,7 @@ export function PaymentSheet() {
                   aria-checked={selected}
                   className={cx(styles.option, selected && styles.optionSelected)}
                   onClick={() => setPicked(o.id)}
+                  {...radioKeys(selected)}
                 >
                   <span className={styles.optionText}>
                     <span className={styles.optionTitle}>{PAYMENT_LABEL[o.id]}</span>
@@ -546,22 +548,22 @@ export function SuccessDialog() {
     >
       <div className={styles.successBody}>
         <p className={styles.successTitle}>
-          <span aria-hidden="true">🎉 </span>Purchase Successful!
+          <span aria-hidden="true">🎉 </span>Purchase successful
         </p>
-        <p className={styles.successSub}>Nice! Let’s activate~</p>
+        <p className={styles.successSub}>Your eSIM is ready to install.</p>
         <p className={styles.successPaid}>
           Paid {money(paid)} · charged in {state.currency}
         </p>
         <div className={styles.successRich}>
-          <p>Next Steps:</p>
+          <p>Next steps</p>
           <ol>
             <li>
-              Check your email or “My eSIM” on APP. We’ve sent you the eSIM QR code and installation instructions.
+              Check your email or My eSIM in the app. We’ve sent you the eSIM QR code and installation&nbsp;instructions.
             </li>
             <li>Activate your eSIM. Scan the QR code on your compatible device.</li>
             <li>Start using data. Once activated, your data plan is live and ready to go.</li>
           </ol>
-          <p>Important Notes:</p>
+          <p>Important notes</p>
           <ul>
             <li>This eSIM can only be activated once and cannot be transferred.</li>
             <li>Please ensure you have a stable internet connection when activating.</li>
@@ -796,6 +798,7 @@ export function CurrencySheet() {
               aria-checked={selected}
               className={cx(styles.option, selected && styles.optionSelected)}
               onClick={() => actions.setCurrency(c.code)}
+              {...radioKeys(selected)}
             >
               <span className={styles.currencySymbol} aria-hidden="true">
                 {c.symbol}

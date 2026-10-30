@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { FAQS, GUIDE_LINKS, currencyOf } from "../data";
 import { useApp, type OverlayId, type RouteId } from "../store";
 import { Img } from "./Img";
@@ -282,12 +282,24 @@ export function FaqSection({ title = "FAQ" }: { title?: string }) {
             </div>
           );
         })}
-        <button type="button" className={styles.chatBtn}>
-          <ChatSupport />
-          Chat with us
-        </button>
+        <ChatButton />
       </div>
     </section>
+  );
+}
+
+/** Support chat entry; the prototype has no chat, so a toast confirms the press. */
+export function ChatButton() {
+  const { actions } = useApp();
+  return (
+    <button
+      type="button"
+      className={styles.chatBtn}
+      onClick={() => actions.toast("info", "Opening chat", "A support agent will reply here")}
+    >
+      <ChatSupport />
+      Chat with us
+    </button>
   );
 }
 
@@ -295,15 +307,16 @@ export function FaqSection({ title = "FAQ" }: { title?: string }) {
 
 export function GuideLinksSection() {
   const { actions } = useApp();
+  const headingId = useId();
   return (
-    <section className={styles.section} aria-labelledby="guide-links-h">
+    <section className={styles.section} aria-labelledby={headingId}>
       <div className={styles.sectionHead}>
-        <h2 id="guide-links-h" className={styles.h20}>
-          eSIM User Guide
+        <h2 id={headingId} className={styles.h20}>
+          eSIM user guide
         </h2>
         <button type="button" className={styles.linkSf}>
           <Img src="/icons/download.svg" size={24} />
-          Install eSIM PDF
+          PDF guide
         </button>
       </div>
       <div className={cx(styles.card, styles.guideLinks)}>
@@ -348,6 +361,28 @@ export function Stepper({ value, onChange, label }: { value: number; onChange: (
       </button>
     </div>
   );
+}
+
+/**
+ * Radio-group keyboard pattern (ARIA APG): the checked radio is the group's only Tab stop, and the arrow keys
+ * move to the next / previous radio and check it. Spread on every `role="radio"` button.
+ */
+const RADIO_STEP: Partial<Record<string, number>> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+export function radioKeys(checked: boolean) {
+  return {
+    tabIndex: checked ? 0 : -1,
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
+      const step = RADIO_STEP[e.key];
+      const group = e.currentTarget.closest('[role="radiogroup"]');
+      if (!step || !group) return;
+      const radios = Array.from(group.querySelectorAll<HTMLElement>('[role="radio"]'));
+      const next = radios[(radios.indexOf(e.currentTarget) + step + radios.length) % radios.length];
+      e.preventDefault();
+      next.focus();
+      next.click();
+    },
+  };
 }
 
 export function Radio({ checked }: { checked: boolean }) {

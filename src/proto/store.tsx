@@ -50,7 +50,7 @@ export const SAMPLE_COUPONS: Coupon[] = [
 
 export type PaymentId = "paypal" | "gpay" | "card";
 export const PAYMENT_LABEL: Record<PaymentId, string> = {
-  paypal: "Paypal",
+  paypal: "PayPal",
   gpay: "Google Pay",
   card: "Credit Card",
 };
@@ -75,6 +75,8 @@ export type State = {
   days: number;
   qty: number;
   cart: CartItem[];
+  /** last line removed from the cart, kept until the traveller leaves the screen so it can be undone */
+  removed: { item: CartItem; index: number } | null;
   coupons: Coupon[];
   payment: PaymentId | null;
   consent: boolean;
@@ -121,6 +123,7 @@ const initialState: State = {
   days: 1,
   qty: 1,
   cart: SEED_CART,
+  removed: null,
   coupons: [],
   payment: null,
   consent: false,
@@ -147,6 +150,7 @@ type Action =
   | { type: "addToCart" }
   | { type: "setCartQty"; key: string; qty: number }
   | { type: "removeCartItem"; key: string }
+  | { type: "undoRemove" }
   | { type: "setCoupons"; coupons: Coupon[] }
   | { type: "setPayment"; payment: PaymentId }
   | { type: "setConsent"; value: boolean }
@@ -194,6 +198,7 @@ function reducer(state: State, action: Action): State {
         transition: action.transition,
         navId: state.navId + 1,
         leaving: current,
+        removed: null,
       };
     }
     case "back": {
@@ -204,6 +209,7 @@ function reducer(state: State, action: Action): State {
         transition: "pop",
         navId: state.navId + 1,
         leaving: top(state.stack),
+        removed: null,
       };
     }
     case "tab": {
@@ -215,6 +221,7 @@ function reducer(state: State, action: Action): State {
         transition: "fade",
         navId: state.navId + 1,
         leaving: current,
+        removed: null,
       };
     }
     case "transitionEnd":
@@ -227,7 +234,7 @@ function reducer(state: State, action: Action): State {
     case "overlayClosed":
       return state.overlay?.closing ? { ...state, overlay: null } : state;
     case "clearOrder":
-      return { ...state, cart: [], coupons: [], consent: false };
+      return { ...state, cart: [], removed: null, coupons: [], consent: false };
     case "toast":
       return {
         ...state,
@@ -255,15 +262,28 @@ function reducer(state: State, action: Action): State {
         was: day ? undefined : plan.was,
         qty: state.qty,
       };
-      return { ...state, cart: [...state.cart, item] };
+      return { ...state, cart: [...state.cart, item], removed: null };
     }
     case "setCartQty":
       return {
         ...state,
         cart: state.cart.map((c) => (c.key === action.key ? { ...c, qty: Math.max(1, Math.min(9, action.qty)) } : c)),
       };
-    case "removeCartItem":
-      return { ...state, cart: state.cart.filter((c) => c.key !== action.key) };
+    case "removeCartItem": {
+      const index = state.cart.findIndex((c) => c.key === action.key);
+      if (index < 0) return state;
+      return {
+        ...state,
+        cart: state.cart.filter((c) => c.key !== action.key),
+        removed: { item: state.cart[index], index },
+      };
+    }
+    case "undoRemove": {
+      if (!state.removed) return state;
+      const cart = [...state.cart];
+      cart.splice(Math.min(state.removed.index, cart.length), 0, state.removed.item);
+      return { ...state, cart, removed: null };
+    }
     case "setCoupons":
       return { ...state, coupons: action.coupons };
     case "setPayment":
@@ -321,6 +341,7 @@ function createActions(dispatch: (a: Action) => void) {
     addToCart: () => dispatch({ type: "addToCart" }),
     setCartQty: (key: string, qty: number) => dispatch({ type: "setCartQty", key, qty }),
     removeCartItem: (key: string) => dispatch({ type: "removeCartItem", key }),
+    undoRemove: () => dispatch({ type: "undoRemove" }),
     setCoupons: (coupons: Coupon[]) => dispatch({ type: "setCoupons", coupons }),
     setPayment: (payment: PaymentId) => dispatch({ type: "setPayment", payment }),
     setConsent: (value: boolean) => dispatch({ type: "setConsent", value }),

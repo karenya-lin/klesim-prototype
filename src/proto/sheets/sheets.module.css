@@ -370,12 +370,18 @@
   flex: 1 1 0;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
   padding: 8px 16px;
   border-radius: var(--r-8);
   background: var(--c-surface);
   color: var(--c-text-dark);
   text-align: left;
+}
+
+/* trailing icons keep their 24px; long copy wraps instead of squeezing them */
+.infoItem > svg,
+.infoItem > img {
+  flex-shrink: 0;
 }
 
 button.infoItem:hover:not(:active) {
@@ -562,6 +568,13 @@ button.infoItem:hover:not(:active) {
 .successSub {
   font-size: 16px;
   text-align: center;
+}
+
+/* W320: keep "Purchase successful" on one line */
+@media (max-width: 360px) {
+  .successTitle {
+    font-size: 21px;
+  }
 }
 
 .successPaid {

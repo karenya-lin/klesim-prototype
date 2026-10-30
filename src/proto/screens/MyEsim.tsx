@@ -23,7 +23,7 @@ export const SAMPLE_ESIMS: EsimCardData[] = [
   {
     id: "esim-a",
     status: "Active",
-    title: "eSim France Format : eSim - Package:100GB - 13 days",
+    title: "France eSIM · 100 GB · 13 days",
     ref: "Ref.: I35153WFWFWJDOIJFPOE",
     date: "2026/10/22",
     left: "8.5GB",
@@ -33,7 +33,7 @@ export const SAMPLE_ESIMS: EsimCardData[] = [
   {
     id: "esim-b",
     status: "Inactive",
-    title: "eSim France Format : eSim - Package:100GB - 13 days",
+    title: "France eSIM · 100 GB · 13 days",
     ref: "Ref.: IWF31313JDOIJFPOE",
     date: "2028/10/30",
     left: "100GB",
@@ -42,7 +42,7 @@ export const SAMPLE_ESIMS: EsimCardData[] = [
   {
     id: "esim-c",
     status: "Inactive",
-    title: "eSim France Format : eSim - Package:100GB - 13 days",
+    title: "France eSIM · 100 GB · 13 days",
     ref: "Ref.: IWF31313JDOIJFPOE",
     date: "2028/10/30",
     left: "100GB",
@@ -117,7 +117,7 @@ export function MyEsimScreen() {
         {
           id: "esim-new",
           status: "New",
-          title: "eSim Global Format : eSim - Package:10GB - 30 days",
+          title: "Global eSIM · 10 GB · 30 days",
           ref: "Ref.: KL2610220001DEMO",
           date: "2026/11/21",
           left: "10GB",

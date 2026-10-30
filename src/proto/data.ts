@@ -335,11 +335,11 @@ export const FAQS = [
 ];
 
 export const GUIDE_LINKS = [
-  "IOS system",
-  "Android system",
-  "IOS install video",
+  "iOS setup",
+  "Android setup",
+  "iOS install video",
   "Android install video",
-  "Capable phone list",
+  "Compatible phones",
 ];
 
 export const GUIDE_STEPS = [
@@ -369,7 +369,8 @@ export const WHY_US = [
   },
   {
     title: "Great Value",
-    body: "Get affordable plans that keep your travels worry-free",
+    // non-breaking hyphen (U+2011), so "free" never wraps onto a line of its own
+    body: "Get affordable plans that keep your travels worry‑free",
     icon: "/img/why-value.webp",
   },
   {
