@@ -159,8 +159,9 @@
   font-size: 17px;
   line-height: 22px;
   color: var(--c-on-dark);
-  opacity: calc(var(--k, 0) * 1.6 - 0.6);
-  transform: translateY(calc((1 - var(--k, 0)) * 10px));
+  /* fully in by k = 0.5, when .topBarBg turns solid, so the bar never rests on a half-faded title */
+  opacity: calc(var(--k, 0) * 4 - 1);
+  transform: translateY(calc(max(0, 0.5 - var(--k, 0)) * 20px));
   pointer-events: none;
 }
 
@@ -170,7 +171,7 @@
 }
 
 .topBarReveal {
-  opacity: calc(var(--k, 0) * 1.6 - 0.6);
+  opacity: calc(var(--k, 0) * 4 - 1);
 }
 
 /* the large header's own first row: kept as space, its controls live in the pinned bar */

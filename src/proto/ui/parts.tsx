@@ -150,7 +150,7 @@ export function useCollapse() {
         lastK = k;
         screen.style.setProperty("--k", k.toFixed(3));
       }
-      const next = raw >= 0.6;
+      const next = raw >= 0.5;
       if (next !== lastCollapsed) {
         lastCollapsed = next;
         setCollapsed(next);
